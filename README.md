@@ -21,6 +21,10 @@ Built for hand-mixed Neapolitan dough, a very hot oven and people who have stron
 
 Open `index.html` in a browser. That's it. No install, no account, no 47 npm packages.
 
+## 🎨 Credits
+
+Icons from [Tabler](https://tabler.io/icons) (MIT), [Lucide](https://lucide.dev/) (ISC) and [Material Design Icons](https://pictogrammers.com/library/mdi/) (Apache 2.0). The flour sack comes from [Game Icons](https://game-icons.net/) (CC BY 3.0).
+
 ## 🧑‍🍳 The fine print
 
 Made with AI, tested on neither a nonna nor a certified pizzaiolo. The dough check is still a work in progress, and the numbers are a very good starting point. The dough itself always has the last word. 🤌
