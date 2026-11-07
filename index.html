@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+[hidden] { display: none !important; }
+</style>
+<title>Napoli Pizza Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one column of choices, ending in the weighed-out recipe slip. */
+:root {
+  --bg: #fbf3e6; --bg-end: #fde6d6; --surface: #fffdf9; --fg: #3a241b; --muted: #75594b; --line: #eed9c4;
+  --accent: #c2502c; --accent-end: #d9605a; --on-accent: #fffdf9; --readout-a: #fbb36b; --readout-b: #f28f86; --on-readout: #3a1a10;
+  --green: #3b7a50; --green-end: #5c9c68; --green-bg: #e3efdf; --on-green: #fbfff9;
+  --caution: #94540f; --caution-bg: #fdeed4;
+  --warn: #a93a30; --warn-bg: #fde3dc;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #231812; --bg-end: #2e1b16; --surface: #30221a; --fg: #f8ebdd; --muted: #c9ae9b; --line: #4d3729;
+  --accent: #f6a266; --accent-end: #f28f86; --on-accent: #3a1a10; --readout-a: #f6a266; --readout-b: #ec8579; --on-readout: #3a1a10;
+  --green: #93d3a3; --green-end: #7cc08f; --green-bg: #26382b; --on-green: #12251a;
+  --caution: #f6c583; --caution-bg: #43301a;
+  --warn: #ffb0a2; --warn-bg: #472219; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #231812; --bg-end: #2e1b16; --surface: #30221a; --fg: #f8ebdd; --muted: #c9ae9b; --line: #4d3729;
+  --accent: #f6a266; --accent-end: #f28f86; --on-accent: #3a1a10; --readout-a: #f6a266; --readout-b: #ec8579; --on-readout: #3a1a10;
+  --green: #93d3a3; --green-end: #7cc08f; --green-bg: #26382b; --on-green: #12251a;
+  --caution: #f6c583; --caution-bg: #43301a;
+  --warn: #ffb0a2; --warn-bg: #472219; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); background-image: linear-gradient(180deg, var(--bg), var(--bg-end)); background-attachment: fixed; color: var(--fg); font: 400 1rem/1.45 var(--body); }
+.page {
+  max-width: 560px; margin: 0 auto; padding-block: 24px 40px;
+  padding-left: max(8px, env(safe-area-inset-left, 0px));
+  padding-right: max(8px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr);
+}
+h1 { font: 800 1.5rem/1.1 var(--display); margin: 0; text-align: center; text-wrap: balance; letter-spacing: -.01em; }
+h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
+.group { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.lbl { display: block; font-weight: 700; margin-bottom: 6px; }
+.stepper { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.stepper button { border: 0; background: none; color: var(--accent); font: 600 1.5rem/1 var(--mono); height: 52px; cursor: pointer; touch-action: manipulation; }
+.stepper output { text-align: center; font: 600 1.25rem var(--mono); }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.seg button { border: 0; border-radius: 5px; background: none; color: var(--fg); font: 700 1rem/1.15 var(--body); min-height: 44px; padding: 6px 2px; cursor: pointer; touch-action: manipulation; }
+.seg button small { display: block; font: 400 .72rem/1.15 var(--body); margin-top: 2px; opacity: .85; }
+.seg button[aria-pressed="true"] { background: linear-gradient(120deg, var(--accent), var(--accent-end)); color: var(--on-accent); }
+.seg button:disabled { opacity: .35; cursor: not-allowed; }
+.hint { margin: 6px 0 0; font-size: .9rem; color: var(--muted); }
+.head-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.head-row output { font: 500 .95rem var(--mono); color: var(--muted); }
+.auto { display: grid; gap: 12px; margin-top: 12px; }
+.time { display: block; width: 100%; min-width: 0; height: 52px; padding: 0 12px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; font: 600 1.25rem var(--mono); }
+.flag { margin: 0; font-size: .95rem; background: var(--warn-bg); color: var(--warn); padding: 8px 10px; border-radius: 6px; }
+input[type=range] { display: block; width: 100%; height: 40px; accent-color: var(--accent); margin: 0; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.flours { display: grid; gap: 8px; }
+.flour { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+.flour-head { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 0; background: none; color: var(--fg); font: 700 1rem var(--body); text-align: left; padding: 10px 8px; min-height: 52px; cursor: pointer; }
+.flour-head span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.flour-head .meta { flex: none; font: 500 .9rem var(--mono); color: var(--muted); }
+.flour-body { display: grid; gap: 12px; padding: 0 8px 10px; }
+.text { display: block; width: 100%; min-width: 0; height: 48px; padding: 0 12px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; font: 400 1rem var(--body); }
+.scale { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); }
+.link { border: 0; background: none; color: var(--accent); font: 700 1rem var(--body); min-height: 44px; cursor: pointer; padding: 0; }
+.link:disabled { opacity: .4; cursor: not-allowed; }
+.add { background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; }
+.remove { justify-self: start; color: var(--warn); }
+
+.start { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.now { border: 0; border-radius: 8px; padding: 0 22px; min-height: 52px; background: linear-gradient(120deg, var(--green), var(--green-end)); color: var(--on-green); font: 700 1rem var(--body); cursor: pointer; touch-action: manipulation; }
+.select { display: block; width: 100%; min-width: 0; height: 48px; padding: 0 10px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; font: 400 1rem var(--body); }
+.plan { display: grid; gap: 14px; min-width: 0; }
+.plan-day { margin: 0; justify-self: start; padding: 3px 10px; border-radius: 99px; background: var(--surface); border: 1px solid var(--line); color: var(--accent); font: 700 .9rem var(--body); }
+.tl { list-style: none; margin: 0; padding: 0; display: grid; }
+.tl li { display: grid; grid-template-columns: 42px 12px minmax(0, 1fr); gap: 6px; padding-bottom: 14px; position: relative; }
+.tl li:last-child { padding-bottom: 0; }
+.tl li:not(:last-child)::before { content: ""; position: absolute; left: 53px; top: 18px; bottom: -2px; width: 2px; background: var(--line); }
+.tl time { font: 600 .92rem/1.45 var(--mono); color: var(--accent); }
+.tl .dot { width: 12px; height: 12px; margin-top: 5px; border-radius: 50%; background: var(--accent); }
+.tl .dot.live { animation: live 1.2s ease-in-out infinite; }
+@keyframes live { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-end); } 50% { opacity: .35; box-shadow: 0 0 0 7px transparent; } }
+@media (prefers-reduced-motion: reduce) { .tl .dot.live { animation: none; outline: 3px solid var(--accent-end); outline-offset: 2px; } }
+.tl-title { display: block; }
+.note { display: block; color: var(--muted); font-size: .92rem; }
+.pills { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
+.pill { display: inline-flex; align-items: baseline; gap: 5px; padding: 3px 8px; border-radius: 99px; background: var(--surface); border: 1px solid var(--line); font-size: .85rem; line-height: 1.2; }
+.pill b { font: 600 .85rem var(--mono); color: var(--accent); white-space: nowrap; }
+.tl-days { display: grid; gap: 16px; }
+.tl-day { display: grid; gap: 8px; }
+.saved { color: var(--muted); font-size: .9rem; margin: 0; }
+.when { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 8px; margin-top: 10px; }
+.when-col { display: grid; gap: 6px; align-content: start; min-width: 0; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.when-h { margin: 0; font: 600 1.05rem var(--display); }
+.when-sub { margin: 0; font-size: .82rem; line-height: 1.2; color: var(--muted); min-height: 2.4em; }
+.when .time { height: 46px; padding: 0 6px; font-size: 1.05rem; background: var(--bg); }
+.when .now { min-height: 46px; padding: 0 4px; font-size: .88rem; }
+.days { background: var(--bg); gap: 2px; padding: 2px; }
+.days button { min-height: 42px; font-size: .72rem; padding: 2px 1px; }
+.when + .flag { margin-top: 8px; }
+
+.check { display: grid; gap: 8px; padding: 10px 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.check-pill { padding: 3px 10px; border-radius: 99px; font: 700 .9rem var(--body); background: var(--green-bg); color: var(--green); }
+.check[data-level="caution"] .check-pill { background: var(--caution-bg); color: var(--caution); }
+.check[data-level="risk"] .check-pill { background: var(--warn-bg); color: var(--warn); }
+.check-body { display: grid; gap: 10px; }
+.check-body p { margin: 0; }
+.check-range { color: var(--muted); font-size: .92rem; }
+.finding { display: grid; gap: 2px; padding: 8px; border-radius: 6px; background: var(--caution-bg); font-size: .95rem; }
+.finding[data-level="risk"] { background: var(--warn-bg); }
+.finding b { color: var(--caution); }
+.finding[data-level="risk"] b { color: var(--warn); }
+.finding .fix { font-weight: 700; }
+.wip { margin: 0; color: var(--muted); font-size: .82rem; }
+
+.slip { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; }
+.readout { background: linear-gradient(115deg, var(--readout-a), var(--readout-b)); color: var(--on-readout); padding: 10px 10px; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.readout .big { font: 600 clamp(2.25rem, 11vw, 3rem)/1 var(--mono); }
+.readout .big small { font-size: .5em; margin-left: 2px; }
+.readout .side { font: 500 .85rem/1.35 var(--mono); text-align: right; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; white-space: normal; padding-right: 8px; overflow-wrap: anywhere; }
+thead th { font: 700 .82rem/1.2 var(--body); color: var(--muted); vertical-align: bottom; }
+td { font: 500 1.05rem var(--mono); }
+td:first-child { font: 400 1rem/1.25 var(--body); }
+td small { display: block; color: var(--muted); font-size: .82rem; }
+tr.sub td { padding-block: 5px; font-size: .95rem; color: var(--muted); border-bottom: 0; }
+tr.sub td:first-child { padding-left: 18px; font-size: .92rem; }
+tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.notes { padding: 10px 8px; display: grid; gap: 10px; font-size: .95rem; }
+.notes p { margin: 0; }
+</style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <h1>Napoli Pizza Calculator</h1>
+  </header>
+
+  <section class="group" aria-label="Batch">
+    <div>
+      <span class="lbl" id="style-l">Pizza style</span>
+      <div class="seg" id="style" role="group" aria-labelledby="style-l">
+        <button type="button" data-v="canotto">Canotto<small>Tall, puffy rim</small></button>
+        <button type="button" data-v="verace">Verace<small>Classic Naples</small></button>
+      </div>
+      <p class="hint" id="styleHint"></p>
+    </div>
+    <div>
+      <span class="lbl">Dough balls</span>
+      <div class="stepper">
+        <button type="button" data-step="-1" aria-label="One ball fewer">−</button>
+        <output id="balls"></output>
+        <button type="button" data-step="1" aria-label="One ball more">+</button>
+      </div>
+    </div>
+    <div>
+      <span class="lbl" id="ball-l">Grams per ball</span>
+      <div class="seg" id="ball" role="group" aria-labelledby="ball-l"></div>
+    </div>
+    <div>
+      <span class="lbl" id="sched-l">Fermentation</span>
+      <div class="seg" id="hours" role="group" aria-labelledby="sched-l">
+        <button type="button" data-v="auto">Auto<small>From times</small></button>
+        <button type="button" data-v="8">8 h<small>Same day</small></button>
+        <button type="button" data-v="24">24 h<small>Most reliable</small></button>
+        <button type="button" data-v="36">36 h<small>In between</small></button>
+        <button type="button" data-v="48">48 h<small>Most flavour</small></button>
+      </div>
+      <p class="hint" id="schedHint"></p>
+      <div class="when">
+        <div class="when-col">
+          <label class="lbl when-h" for="startTime">Start</label>
+          <p class="when-sub">Time you'll start making dough</p>
+          <input class="time" id="startTime" type="time">
+          <button type="button" class="now" id="now">Use current time</button>
+          <p class="hint" id="startHint" hidden></p>
+        </div>
+        <div class="when-col">
+          <span class="lbl when-h" id="end-l">End</span>
+          <p class="when-sub">Time you expect to bake it</p>
+          <div class="seg days" id="endDay" role="group" aria-labelledby="end-l">
+            <button type="button" data-v="0">Today</button>
+            <button type="button" data-v="1">Tomorrow</button>
+            <button type="button" data-v="2">Day after</button>
+          </div>
+          <input class="time" id="endTime" type="time" aria-labelledby="end-l">
+        </div>
+      </div>
+      <p class="flag" id="autoFlag" hidden></p>
+    </div>
+  </section>
+
+  <section class="group" aria-labelledby="mix-h">
+    <div class="head-row">
+      <h2 id="mix-h">Flour mix</h2>
+      <output id="blendOut"></output>
+    </div>
+    <div class="flours" id="flours"></div>
+    <button type="button" class="link add" id="addFlour">Add a flour</button>
+  </section>
+
+  <section class="group" aria-labelledby="tune-h">
+    <h2 id="tune-h">Formula</h2>
+    <div>
+      <div class="head-row"><span class="lbl" id="hyd-l">Hydration</span><output id="hydOut"></output></div>
+      <div class="seg" id="hyd" role="group" aria-labelledby="hyd-l"></div>
+      <p class="hint" id="hydWhy"></p>
+    </div>
+    <div>
+      <div class="head-row"><span class="lbl" id="salt-l">Salt</span><output id="saltOut"></output></div>
+      <div class="seg" id="salt" role="group" aria-labelledby="salt-l">
+        <button type="button" data-v="2.5">2.5%<small>Mild</small></button>
+        <button type="button" data-v="2.7">2.7%<small>Medium</small></button>
+        <button type="button" data-v="2.8">2.8%<small>Default</small></button>
+        <button type="button" data-v="2.9">2.9%<small>STG</small></button>
+        <button type="button" data-v="3">3.0%<small>AVPN</small></button>
+      </div>
+    </div>
+    <div>
+      <span class="lbl" id="temp-l">Kitchen temperature</span>
+      <div class="seg" id="temp" role="group" aria-labelledby="temp-l">
+        <button type="button" data-v="19">19°<small>+20% yeast</small></button>
+        <button type="button" data-v="21">21°<small>+7%</small></button>
+        <button type="button" data-v="23">23°<small>−7%</small></button>
+        <button type="button" data-v="25">25°<small>−20%</small></button>
+        <button type="button" data-v="27">27°<small>−30%</small></button>
+      </div>
+    </div>
+    <div id="fridgeBox">
+      <span class="lbl" id="fridge-l">Fridge temperature</span>
+      <div class="seg" id="fridge" role="group" aria-labelledby="fridge-l">
+        <button type="button" data-v="3">2–3°<small>Cold: +30% yeast</small></button>
+        <button type="button" data-v="4">4–5°<small>Target</small></button>
+      </div>
+      <p class="hint">Measure it with a thermometer in a glass of water. The dial isn't a temperature.</p>
+    </div>
+    <div>
+      <span class="lbl" id="yeast-l">Yeast</span>
+      <div class="seg" id="yeast" role="group" aria-labelledby="yeast-l">
+        <button type="button" data-v="dry">Instant dry</button>
+        <button type="button" data-v="fresh">Fresh</button>
+      </div>
+    </div>
+    <div id="weighBox">
+      <span class="lbl" id="weigh-l">How you weigh the yeast</span>
+      <div class="seg" id="weigh" role="group" aria-labelledby="weigh-l">
+        <button type="button" data-v="scale">0.01 g scale<small>Most accurate</small></button>
+        <button type="button" data-v="solution">Solution<small>No fine scale</small></button>
+      </div>
+    </div>
+    <div>
+      <span class="lbl" id="fold-l">Fold sets</span>
+      <div class="seg" id="fold" role="group" aria-labelledby="fold-l">
+        <button type="button" data-v="0">None<small>Less work</small></button>
+        <button type="button" data-v="2">2 sets<small>Recommended</small></button>
+        <button type="button" data-v="3">3 sets<small>More strength</small></button>
+      </div>
+    </div>
+    <button type="button" class="link" id="reset">Reset all choices</button>
+  </section>
+
+  <section class="check" id="check" aria-labelledby="check-h">
+    <div class="head-row">
+      <h2 id="check-h">Dough check</h2>
+      <span class="check-pill" id="checkStatus"></span>
+    </div>
+    <div class="check-body" id="checkBody"></div>
+    <p class="wip">Work in progress: basic rules comparing time, flour strength and hydration. The dough itself has the last word.</p>
+  </section>
+
+  <section class="slip" aria-live="polite" aria-label="Recipe">
+    <div class="readout">
+      <div class="big"><span id="rTotal"></span><small> g</small></div>
+      <div class="side" id="rSide"></div>
+    </div>
+    <div class="scroll"><table id="table"></table></div>
+    <div class="notes" id="notes"></div>
+  </section>
+
+  <section class="plan" aria-labelledby="tl-h">
+    <h2 id="tl-h">Timeline</h2>
+    <div class="tl-days" id="timeline"></div>
+    <p class="saved" id="savedNote" hidden>Your start time and choices are saved in this browser on this device.</p>
+  </section>
+
+</main>
+
+<script>
+/* CALC-START */
+const interp = (x, pts) => {
+  if (x <= pts[0][0]) return pts[0].slice(1);
+  const last = pts[pts.length - 1];
+  if (x >= last[0]) return last.slice(1);
+  const i = pts.findIndex(p => p[0] >= x), a = pts[i - 1], b = pts[i], t = (x - a[0]) / (b[0] - a[0]);
+  return a.slice(1).map((v, k) => v + (b[k + 1] - v) * t);
+};
+const roundTo = (v, step) => Math.round(v / step) * step;
+/* Fresh yeast % of flour, from the knowledge file's schedule summary. Dry = fresh / 3. */
+const FRESH_CURVE = [[8, 0.4], [24, 0.24], [36, 0.27], [48, 0.3]];
+/* Under 10 h stays at room temperature. From 10 h: 2 h warm, cold bulk, then 5–6 h appretto. */
+/* Small overshoots don't matter: 22–24 h counts as 24 h and 48–51 h counts as 48 h. */
+const tolerant = h => h >= 22 && h < 24 ? 24 : h > 48 && h <= 51 ? 48 : h;
+function schedule(h) {
+  const cold = h >= 10;
+  const rise = cold ? roundTo(interp(h, [[24, 5], [36, 5.5]])[0], 0.25) : h >= 6 ? h - 2.5 : h / 2;
+  return { cold, fridgeAt: 2, ballAt: h - rise, rise, fresh: interp(tolerant(h), FRESH_CURVE)[0] };
+}
+const toMin = t => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+const autoHours = s => (s.endDay * 1440 + toMin(s.endTime) - toMin(s.startTime)) / 60;
+const TEMP_FACTOR = { 19: 1.2, 21: 1.07, 23: 0.93, 25: 0.8, 27: 0.7 };
+const MAX_PER_BOWL = 6;
+const defaultFlours = () => [
+  { name: "Caputo Pizzeria", w: 270 },
+  { name: "K Plus Manitoba", w: 380, share: 25 },
+];
+const DEFAULTS = { style: "canotto", balls: 12, ball: 270, hours: 48, hyd: 66, salt: 2.8, temp: 21, fridge: 4, yeast: "dry", weigh: "scale", fold: 2,
+  startTime: "12:00", endDay: 1, endTime: "19:00" };
+
+const shares = flours => {
+  const rest = flours.slice(1).map(f => f.share);
+  return [100 - rest.reduce((a, b) => a + b, 0), ...rest];
+};
+const blendW = flours => { const p = shares(flours); return Math.round(flours.reduce((t, f, i) => t + f.w * p[i], 0) / 100); };
+
+function weigh(flour, s, freshPct) {
+  const p = shares(s.flours);
+  const added = p.slice(1).map(x => Math.round(flour * x / 100));
+  const parts = [flour - added.reduce((a, b) => a + b, 0), ...added];
+  const water = Math.round(flour * s.hyd / 100);
+  const salt = Math.round(flour * s.salt / 100);
+  const dryOn = s.yeast === "dry";
+  const yeast = flour * freshPct / 100 / (dryOn ? 3 : 1);
+  const held = Math.max(5, Math.min(30, roundTo(water * 0.05, 5)));
+  const solution = dryOn && s.weigh === "solution" ? Math.max(0.5, roundTo(yeast * 10, 0.5)) : 0;
+  return { flour, parts, water, salt, yeast, solution, held, plain: water - solution - held };
+}
+
+function calculate(s) {
+  const sch = schedule(s.hours);
+  const freshPct = sch.fresh * TEMP_FACTOR[s.temp] * (sch.cold && s.fridge === 3 ? 1.3 : 1);
+  const pct = 1 + s.hyd / 100 + s.salt / 100 + freshPct / 100 / (s.yeast === "dry" ? 3 : 1);
+  const bowlCount = Math.ceil(s.balls / MAX_PER_BOWL);
+  const big = Math.ceil(s.balls / bowlCount), bigCount = s.balls - (big - 1) * bowlCount;
+  const sizes = [{ balls: big, count: bigCount }];
+  if (bigCount < bowlCount) sizes.push({ balls: big - 1, count: bowlCount - bigCount });
+  const bowls = sizes.map(b => ({ ...b, ...weigh(roundTo(b.balls * s.ball / pct, 10), s, freshPct) }));
+  const total = weigh(bowls.reduce((t, b) => t + b.flour * b.count, 0), s, freshPct);
+  const sum = k => bowls.reduce((t, b) => t + b[k] * b.count, 0);
+  ["solution", "held"].forEach(k => total[k] = sum(k));
+  total.plain = total.water - total.solution - total.held;
+  total.parts = s.flours.map((_, i) => bowls.reduce((t, b) => t + b.parts[i] * b.count, 0));
+  return { bowls, total, bowlCount, freshPct, sch };
+}
+
+/* Dough check (work in progress). Flour windows follow the W-to-time table: [hours, lowest W, highest W]. */
+const W_WINDOW = [[6, 210, 295], [12, 230, 300], [24, 260, 340], [36, 280, 360], [48, 290, 400]];
+const comfyHydration = w => 65 + (w - 270) / 20;
+
+function checkDough({ hours: h, blend, hyd, strongShare, style, fold }) {
+  const [minW, maxW] = interp(tolerant(h), W_WINDOW).map(Math.round);
+  const comfy = comfyHydration(blend);
+  const topHyd = Math.round(comfy + 1);
+  const hours = Math.round(h);
+  const out = [];
+  const add = (level, title, why, fix) => out.push({ level, title, why, fix });
+
+  if (h > 51 && blend < 340) add("caution", "Past 51 h needs very strong flour",
+    "Flour around W 340–400 is what suits 48–72 h, and the yeast amounts here stop at 48 h.", "Shorten to 48 h or less.");
+  if (h > 8.5 && h < 22) add("caution", "Between the tested schedules",
+    "This time sits between the same-day and 24 h recipes, so the yeast and timing are estimates.", "Use 8 h or 24 h for the most reliable result.");
+
+  const gap = minW - blend;
+  if (gap > 0) {
+    const share = Math.ceil((gap / (380 - blend)) * 20) * 5;
+    const fits = W_WINDOW.filter(r => r[1] <= blend && r[0] < h).pop();
+    const options = [];
+    if (share <= 30) options.push(`add about ${share}% of a W 380 flour`);
+    if (fits) options.push(`shorten to ${fits[0]} h`);
+    add(gap >= 30 ? "risk" : "caution", `Flour is on the weak side for ${hours} h`,
+      `W ${blend} is below the roughly W ${minW} this ferment wants, so the dough can turn slack and tear.`,
+      options.length ? `To fix it, ${options.join(" or ")}.` : `Use a stronger main flour, around W ${minW}.`);
+  }
+  if (blend > maxW) add("caution", "Flour is stronger than this ferment needs",
+    `W ${blend} needs time to relax, so after ${hours} h it may stay tight and snap back.`,
+    `Bring the blend down toward W ${maxW}${h < 48 ? " or ferment longer" : ""}.`);
+
+  const hydOption = [70, 68, 66, 65, 64].find(v => v <= comfy + 1) || 64;
+  const needW = Math.ceil(((hyd - 1 - 65) * 20 + 270) / 10) * 10;
+  if (h >= 42 && hyd >= 68 && blend < 300) add("risk", "Long, wet and not very strong",
+    `${hours} h at ${hyd}% on W ${blend} is the combination most likely to turn slack and sticky.`,
+    `Change at least one: drop to ${hydOption}%, raise the blend above W 300, or shorten the ferment.`);
+  else if (hyd - comfy > 1) add(hyd - comfy > 3 ? "risk" : "caution", "Hydration is high for this flour",
+    `W ${blend} comfortably takes about ${topHyd}%, so ${hyd}% will feel sticky by hand.`,
+    `Drop to ${hydOption}% or raise the blend to about W ${needW}.`);
+  if (hyd > 68) add("caution", "Hard to mix by hand",
+    "Hand mixing gets harder above about 68%, and the rim can char before the crumb sets.",
+    "Use slap and fold, rest between kneads, and keep the stone at 430–450 °C.");
+
+  if (fold === 0 && hyd >= 68) add("caution", "Wet dough without folds",
+    `At ${hyd}%, folds build strength that kneading alone may not give.`, "Add 2 fold sets, or ball the dough extra tight.");
+
+  if (hyd <= 64 && blend >= 340) add("caution", "Dough may be stiff",
+    `Stronger flour absorbs more water, so ${hyd}% can feel tight and open poorly.`, "Try 66–68%.");
+  if (h < 10 && strongShare > 15) add("caution", "Too much strong flour for a same-day dough",
+    `${strongShare}% of the mix is W 350 or above. In a few hours it stays tight.`, "Keep it at 15% or less.");
+  else if (strongShare > 30) add("caution", "A lot of very strong flour",
+    `${strongShare}% of the mix is W 350 or above. Past about 30% the dough gets tight and springy.`, "Keep strong flour at 30% or less.");
+
+  if (style === "verace") {
+    if (h < 8 || h > 24) add("caution", "Outside the AVPN time",
+      `The AVPN rules allow 8–24 h in total, so ${hours} h isn't strictly verace.`, "Choose 8 h or 24 h to stay inside the rules.");
+    if (blend < 250 || blend > 320) add("caution", "Outside the AVPN flour range",
+      `The AVPN reading is about W 250–320, and this blend is W ${blend}.`, "Adjust the blend toward that range.");
+  }
+
+  const rank = { risk: 2, caution: 1 };
+  out.sort((a, b) => rank[b.level] - rank[a.level]);
+  return { level: out.length ? out[0].level : "good", findings: out, minW, maxW, topHyd };
+}
+/* CALC-END */
+
+/* W values are typical figures. Remaining slots are placeholders until researched. */
+const FLOUR_LIST = [
+  { name: "Caputo Pizzeria", w: 270 },
+  { name: "Caputo Nuvola", w: 270 },
+  { name: "Caputo Nuvola Super", w: 320 },
+  { name: "Caputo Cuoco", w: 320 },
+  { name: "Caputo Manitoba Oro", w: 370 },
+  { name: "K Plus Manitoba", w: 380 },
+  { name: "Le 5 Stagioni Pizza Napoletana", w: 270 },
+  { name: "Le 5 Stagioni Superiore", w: 300 },
+  { name: "Polselli Classica", w: 300 },
+  null, null, null, null, null, null, null, null, null, null, null,
+];
+const STORE = "canotto-calc-v1";
+const $ = id => document.getElementById(id);
+const esc = t => t.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const MAX_FLOURS = 4, SHARE_CHOICES = [10, 15, 20, 25, 30];
+const STYLES = {
+  canotto: {
+    hint: "Opens to 28–30 cm with a tall, airy rim. Canotto dough runs from 65% hydration up.",
+    hyd: [[64, "Easy"], [65, "Sweet spot"], [66, "Balanced"], [68, "Sticky"], [70, "Wet"]],
+    ball: [[250, "Smaller"], [260, "Canotto"], [270, "Tall rim"], [290, "Large"]],
+    defHyd: 66, defBall: 270, stone: "430–460 °C",
+  },
+  verace: {
+    hint: "The AVPN and STG tradition: 180–250 g balls, up to 35 cm, with a 1–2 cm rim.",
+    hyd: [[58, "AVPN"], [60, "Classic"], [62, "Easy"], [65, "Airier"]],
+    ball: [[180, "Small"], [200, "Light"], [230, "Medium"], [250, "Full"]],
+    defHyd: 60, defBall: 250, stone: "430–480 °C",
+  },
+};
+const HYD_WHY = {
+  58: "The AVPN figure. Easiest to launch and turn, very burn-resistant, with a tighter rim.",
+  60: "The classic verace feel. Easy to knead by hand in one long knead.",
+  62: "Still easy to handle, a little more open than 60%.",
+  64: "The fallback if 66% felt too sticky. Two points is a bigger change in feel than it sounds.",
+  65: "The sweet spot: airy yet manageable.",
+  66: "The canotto entry point with a 25% Manitoba blend.",
+  68: "Slightly sticky and the top of the practical hand-mixed range. Use semola.",
+  70: "Wet. Handle gently and watch for char.",
+};
+const isoDay = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const newState = () => ({ ...DEFAULTS, startDate: isoDay(new Date()), flours: defaultFlours() });
+let state = newState();
+try { state = { ...state, ...JSON.parse(localStorage.getItem(STORE) || "{}") }; } catch (e) {}
+const nearest = (v, list, fallback) => typeof v === "number" && !isNaN(v)
+  ? list.reduce((a, b) => Math.abs(b - v) < Math.abs(a - v) ? b : a) : fallback;
+if (!STYLES[state.style]) state.style = "canotto";
+const firsts = l => l.map(o => o[0]);
+state.ball = nearest(state.ball, firsts(STYLES[state.style].ball), STYLES[state.style].defBall);
+state.hyd = nearest(state.hyd, firsts(STYLES[state.style].hyd), STYLES[state.style].defHyd);
+state.salt = nearest(state.salt, [2.5, 2.7, 2.8, 2.9, 3], 2.8);
+state.temp = nearest(state.temp, [19, 21, 23, 25, 27], 21);
+if (state.hours !== "auto" && ![8, 24, 36, 48].includes(state.hours)) state.hours = 48;
+if (!/^\d{4}-\d{2}-\d{2}$/.test(state.startDate || "")) state.startDate = isoDay(new Date());
+if (![0, 2, 3].includes(state.fold)) state.fold = 2;
+if (!Array.isArray(state.flours) || !state.flours.length) state.flours = defaultFlours();
+let openFlour = null;
+
+const startAt = s => new Date(`${s.startDate}T${s.startTime}:00`);
+function hoursIn(s, hours, exact) {
+  const d = startAt(s);
+  d.setMinutes(d.getMinutes() + (exact ? Math.round(hours * 60) : Math.round(hours * 12) * 5));
+  return d;
+}
+const hhmm = d => `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+const dateText = d => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+function dayLabel(d) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const day = new Date(d); day.setHours(0, 0, 0, 0);
+  const diff = Math.round((day - today) / 86400000);
+  const word = { "-1": "Yesterday", 0: "Today", 1: "Tomorrow" }[diff];
+  return word ? `${word} · ${dateText(d)}` : dateText(d);
+}
+/* Now, rounded up to the next quarter hour: 18:19 and 18:23 both give 18:30. */
+function nextQuarter(now) {
+  const d = new Date(now);
+  d.setSeconds(0, 0);
+  d.setMinutes(Math.ceil((now.getMinutes() + (now.getSeconds() || now.getMilliseconds() ? 0.01 : 0)) / 15) * 15);
+  return d;
+}
+
+function planHint(h) {
+  const c = schedule(h);
+  const rise = `Final rise ${c.rise} h at 22–24 °C.`;
+  return c.cold
+    ? `2 h warm, then fridge until ${c.ballAt} h. ${rise}`
+    : `Room temperature only: bulk until ${c.ballAt} h, then ball. ${rise}`;
+}
+
+const pill = (label, amount) => `<span class="pill">${label}${amount ? `<b>${amount}</b>` : ""}</span>`;
+
+function timelineEvents(s, h, r) {
+  const c = schedule(h), st = STYLES[s.style], canotto = s.style === "canotto";
+  const ball = c.ballAt, lastOut = h + s.balls * 3 / 60;
+  const dry = s.yeast === "dry", solutionOn = dry && s.weigh === "solution";
+  const grams = k => r.bowls.map(b => b[k]).join(" / ") + " g";
+  const yeastAmt = r.bowls.map(b => fmtY(b.yeast, dry)).join(" / ") + " g";
+  const hot = s.temp >= 25;
+  const waterTemp = !c.cold ? (hot ? "20–22 °C" : "about 25 °C") : hot ? "18–20 °C" : "20–22 °C";
+  const flourPills = s.flours.map((f, i) => pill(esc(flourName(f, i)), r.bowls.map(b => b.parts[i]).join(" / ") + " g"));
+  const ballPills = bowl => [pill("Dough balls", `${bowl.balls} × ${s.ball} g`), pill(s.hyd >= 65 ? "Thin film of oil" : "Bench flour")];
+  const mixPills = [...flourPills];
+  if (dry && !solutionOn) mixPills.push(pill("Instant yeast", yeastAmt));
+  mixPills.push(pill(`Water ${waterTemp}`, grams("plain")));
+  if (solutionOn) mixPills.push(pill("Yeast solution", r.bowls.map(b => fmtS(b.solution)).join(" / ") + " g"));
+  if (!dry) mixPills.push(pill("Fresh yeast", yeastAmt));
+  const firstStep = dry && !solutionOn ? "Whisk the flours and yeast together dry." : "Whisk the flours together dry.";
+  const wetStep = !dry ? "Crumble the yeast into the water and stir to dissolve." : solutionOn ? "Stir the solution, then add it to the water." : "";
+  const tight = s.fold ? "until taut" : "until taut like a drum skin, because skipping folds means less structure";
+  const ev = [
+    { t: -0.25, title: "Test the yeast if you're unsure", pills: [pill("Yeast", "1 tsp"), pill("Sugar", "½–1 tsp"), pill("Water 32–40 °C", "100 ml")],
+      text: "Stir together and wait. It should foam within about 5 min (instant) or 10 min (fresh). No foam after 15 min means it's dead." },
+    { t: 0, title: "Mix", pills: mixPills,
+      text: `${firstStep} Pour the water into a large bowl. ${wetStep} Add the flour and mix by hand until no dry flour remains. Cover and rest 15–20 min.${solutionOn ? "" : ""}`.replace(/  +/g, " ") },
+    { t: 20 / 60, title: "Add salt and held-back water", pills: [pill("Fine sea salt", grams("salt")), pill("Held-back water", grams("held"))],
+      text: "Sprinkle the salt over the dough and add the water in splashes. Squeeze it through for 2–3 min until you can't feel any grains. Then knead 10 min, using slap and fold while it's sticky, then push, fold and turn. Wet your hands and don't add flour." },
+    { t: 35 / 60, title: "Rest", text: "10 min, covered." },
+    { t: 45 / 60, title: "Knead again", text: "5–10 min, until it's smooth, holds a ball and a poke springs back slowly." },
+    { t: 1, title: c.cold ? "Into an oiled container" : "Bulk rise", pills: [pill("Oiled container", "2× dough volume")],
+      text: c.cold ? "Shape into a ball, put it in and mark the level with tape." : "Cover and leave at room temperature, aiming for a dough at 23–25 °C. Expect bubbles and a slight puff in about 1 h." },
+  ];
+  const limit = c.cold ? c.fridgeAt : ball;
+  ({ 0: [], 2: [80, 105], 3: [75, 95, 115] })[s.fold].filter(m => m / 60 < limit).forEach((m, i) => ev.push({ t: m / 60, title: `Fold set ${i + 1}`,
+    text: i ? "Same again." : "Stretch one side up, fold it over, turn a quarter and repeat on all four sides." }));
+  if (c.cold) ev.push({ t: c.fridgeAt, title: "Into the fridge", pills: [pill("Fridge", "4–5 °C")],
+    text: "Lid on, middle shelf, away from the back wall. Leave it alone." });
+  ev.push({ t: ball, title: r.bowlCount > 1 ? "Ball bowl A" : "Ball the dough", pills: ballPills(r.bowls[0]),
+    text: `${c.cold ? "About 1.5× is on track. 2× or more: ball later, with a shorter and cooler rise. Only 1.2–1.3×: proof warmer, at 25–27 °C. No change at all: it's a yeast problem. " : ""}Wet the scraper and let the dough fall out. Cut the pieces, fold the edges to the centre, then drag each ball toward you with cupped hands ${tight}. Stop if the surface tears. Box seam down, at least 5 cm apart, airtight. Final rise ${c.rise} h at 22–24 °C.` });
+  for (let i = 1; i < r.bowlCount; i++) ev.push({ t: ball + i / 2, title: `Ball bowl ${"ABCDEFG"[i]}`,
+    pills: ballPills(r.bowls[Math.min(i, r.bowls.length - 1)]), text: "Same as before. This stagger matches your baking order." });
+  if (h - 2.5 > ball) ev.push({ t: h - 2.5, title: "Halfway check", text: "Already 1.5× and soft: move somewhere cooler. Barely moving: move somewhere warmer. Never above about 30 °C." });
+  ev.push(
+    { t: h - 1, title: "Get ready", pills: [pill("Semola"), pill("Drained mozzarella"), pill("Toppings"), pill("Peel")], text: "Cut the mozzarella and leave it draining." },
+    { t: h - 0.75, title: "Poke test, light the oven", text: "Ready when roughly doubled and relaxed, and a floured fingertip leaves a dent that fills back slowly and only partly. If it springs back fast, give it 20–30 min more somewhere warm. Light the oven based on the dough and preheat 45 min." },
+    { t: h - 5 / 60, title: "Measure the stone", pills: [pill("Stone", st.stone)], text: "Use an infrared thermometer on the centre of the stone. Turn the flame low just before launching." },
+    { t: h, exact: true, title: "Open the first pizza", pills: [pill("Dough ball", "1"), pill("Semola")],
+      text: canotto ? "Coat the ball in semola. Press from the centre outward to push the gas into the edge, leaving the outer 2.5–3 cm untouched. Flip, repeat, then drape over the backs of your hands and rotate to 28–30 cm. Never press the rim."
+        : "Coat the ball in semola. Open by hand from the centre outward, no rolling pin, up to 35 cm, with a thin centre and a 1–2 cm rim." },
+    { t: h, exact: true, title: "Bake", pills: [pill("Pizzas", s.balls), pill("Each", "about 3 min")],
+      text: "After 25–30 s turn 180°, then bake 25–40 s more. Rest 30 s before cutting. Flame back up and let the stone recover 1–2 min before the next one." },
+    { t: lastOut, exact: true, title: "Last pizza out" },
+  );
+  return ev.filter(e => e.t < 1 / 60 ? e.t === 0 || e.t < 0 : true).sort((a, b) => a.t - b.t);
+}
+
+function renderTimeline(s, h, r) {
+  const groups = [];
+  timelineEvents(s, h, r).forEach(e => {
+    const d = hoursIn(s, e.t, e.exact || e.t === 0), label = dayLabel(d);
+    let g = groups[groups.length - 1];
+    if (!g || g.label !== label) groups.push(g = { label, items: [] });
+    g.items.push(`<li data-at="${d.getTime()}"><time>${hhmm(d)}</time><span class="dot"></span><div><b class="tl-title">${e.title}</b>${e.pills ? `<span class="pills">${e.pills.join("")}</span>` : ""}${e.text ? `<span class="note">${e.text}</span>` : ""}</div></li>`);
+  });
+  const each = r.bowlCount === 1 ? "" : `<p class="hint">${r.bowls.length === 1 ? "Amounts are per bowl. Do each step for every bowl." : "Amounts are per bowl size. Do each step for every bowl."}</p>`;
+  return each + groups.map(g => `<div class="tl-day"><p class="plan-day">${g.label}</p><ol class="tl">${g.items.join("")}</ol></div>`).join("");
+}
+
+/* Flashes the dot of the step happening right now. */
+function markNow() {
+  const items = [...document.querySelectorAll(".tl li")], now = Date.now();
+  items.forEach(li => li.querySelector(".dot").classList.remove("live"));
+  const started = items.filter(li => +li.dataset.at <= now);
+  if (!started.length || started.length === items.length) return;
+  started[started.length - 1].querySelector(".dot").classList.add("live");
+}
+setInterval(markNow, 30000);
+
+const fmtY = (g, dry) => g < 3 && dry ? g.toFixed(2) : g < 10 ? g.toFixed(1) : String(Math.round(g));
+const fmtS = g => Number.isInteger(g) ? String(g) : g.toFixed(1);
+const flourName = (f, i) => f.name.trim() || `Flour ${i + 1}`;
+const strength = w => w < 250 ? "Soft" : w <= 320 ? "Medium" : "Strong";
+
+function row(label, vals, cls) {
+  return `<tr class="${cls || ""}"><td>${label}</td>${vals.map(v => `<td>${v}</td>`).join("")}</tr>`;
+}
+const segButtons = (opts, unit) => opts.map(([v, l]) => `<button type="button" data-v="${v}">${v}${unit}<small>${l}</small></button>`).join("");
+function renderStyle() {
+  const st = STYLES[state.style];
+  $("ball").innerHTML = segButtons(st.ball, "");
+  $("hyd").innerHTML = segButtons(st.hyd, "%");
+  $("styleHint").textContent = st.hint;
+}
+
+/* Rebuilt only when the list changes, so dragging a slider or typing a name keeps focus. */
+function renderFlours() {
+  const p = shares(state.flours);
+  $("flours").innerHTML = state.flours.map((f, i) => {
+    const open = openFlour === i;
+    const otherShare = 100 - p[0] - (i ? f.share : 0);
+    const shareSeg = i === 0
+      ? `<p class="hint">This is the main flour. It takes the share the other flours leave.</p>`
+      : `<div><span class="lbl">Share of the flour</span><div class="seg">${SHARE_CHOICES.map(v =>
+          `<button type="button" data-share="${i}:${v}" aria-pressed="${f.share === v}" ${otherShare + v >= 100 ? "disabled" : ""}>${v}%</button>`).join("")}</div></div>`;
+    return `<div class="flour">
+      <button type="button" class="flour-head" data-open="${i}" aria-expanded="${open}">
+        <span id="fname${i}"></span><span class="meta" id="fmeta${i}"></span>
+      </button>
+      ${open ? `<div class="flour-body">
+        <div><label class="lbl" for="pick${i}">Choose a flour</label>
+          <select class="select" id="pick${i}" data-pick="${i}">
+            <option value="">Custom flour</option>
+            ${FLOUR_LIST.filter(Boolean).map(o => `<option value="${esc(o.name)}" ${o.name === f.name ? "selected" : ""}>${esc(o.name)} (W ${o.w})</option>`).join("")}
+            <option disabled>${FLOUR_LIST.filter(o => !o).length} more flours to be added</option>
+          </select>
+          <p class="hint">W values are typical figures. Check your bag.</p></div>
+        <div><label class="lbl" for="name${i}">Name (optional)</label>
+          <input class="text" id="name${i}" data-name="${i}" type="text" autocomplete="off" placeholder="Flour ${i + 1}" value="${esc(f.name)}"></div>
+        <div><div class="head-row"><label class="lbl" for="w${i}">Strength</label><output id="wOut${i}"></output></div>
+          <input id="w${i}" data-w="${i}" type="range" min="180" max="420" step="10" value="${f.w}">
+          <div class="scale"><span>W 180</span><span>W 420</span></div></div>
+        ${shareSeg}
+        ${i ? `<button type="button" class="link remove" data-remove="${i}">Remove this flour</button>` : ""}
+      </div>` : ""}
+    </div>`;
+  }).join("");
+  $("addFlour").disabled = state.flours.length >= MAX_FLOURS || p[0] <= 10;
+}
+
+const CHECK_LABEL = { good: "Looks good", caution: "Worth a look", risk: "Risky" };
+function renderCheck(h, blend, hyd, strongShare) {
+  const box = $("check");
+  if (h < 4) {
+    box.dataset.level = "caution";
+    $("checkStatus").textContent = "Waiting";
+    $("checkBody").innerHTML = `<p class="hint">Pick times at least 4 h apart to check this dough.</p>`;
+    return;
+  }
+  const c = checkDough({ hours: h, blend, hyd, strongShare, style: state.style, fold: state.fold });
+  box.dataset.level = c.level;
+  $("checkStatus").textContent = CHECK_LABEL[c.level];
+  const range = `<p class="check-range">For ${h} h: about W ${c.minW}–${c.maxW}. W ${blend} takes up to about ${c.topHyd}%.</p>`;
+  $("checkBody").innerHTML = range + (c.findings.length
+    ? c.findings.map(f => `<div class="finding" data-level="${f.level}"><b>${f.title}</b><p>${f.why}</p><p class="fix">${f.fix}</p></div>`).join("")
+    : `<p>${h} h, W ${blend} and ${hyd}% suit each other.</p>`);
+}
+
+function render() {
+  const s = state, auto = s.hours === "auto";
+  if (!auto) {
+    const end = toMin(s.startTime) + s.hours * 60;
+    s.endDay = Math.floor(end / 1440);
+    s.endTime = `${String(Math.floor(end % 1440 / 60)).padStart(2, "0")}:${String(end % 60).padStart(2, "0")}`;
+  }
+  const h = auto ? Math.round(autoHours(s) * 10) / 10 : s.hours;
+  const r = calculate({ ...s, hours: Math.max(h, 4) });
+  $("balls").textContent = s.balls;
+  $("startTime").value = s.startTime; $("endTime").value = s.endTime;
+  [["style", s.style], ["hours", s.hours], ["ball", s.ball], ["temp", s.temp], ["fridge", s.fridge], ["yeast", s.yeast], ["weigh", s.weigh], ["fold", s.fold], ["hyd", s.hyd], ["salt", s.salt], ["endDay", s.endDay]].forEach(([id, v]) =>
+    $(id).querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === String(v))));
+  $("hydWhy").textContent = HYD_WHY[s.hyd];
+  $("fridgeBox").hidden = !r.sch.cold;
+  $("weighBox").hidden = s.yeast !== "dry";
+  const flag = h <= 0 ? "Bake time is before the start time. Pick a later bake time."
+    : h < 4 ? `That is only ${h} h. The shortest schedule here is about 4 h.` : "";
+  $("autoFlag").textContent = flag;
+  $("autoFlag").hidden = !flag;
+  $("schedHint").textContent = h < 4 ? "" : (auto ? `Fermentation: ${h} h. ` : "") + planHint(h);
+  const old = s.startDate !== isoDay(new Date());
+  $("startHint").hidden = !old;
+  if (old) $("startHint").textContent = `Saved start: ${dateText(startAt(s))}. Tap Now or change the time to start today.`;
+
+  const p = shares(s.flours), blend = blendW(s.flours);
+  $("blendOut").textContent = `Blend about W ${blend}`;
+  s.flours.forEach((f, i) => {
+    $(`fname${i}`).textContent = flourName(f, i);
+    $(`fmeta${i}`).textContent = `W ${f.w} · ${p[i]}%`;
+    const w = $(`wOut${i}`);
+    if (w) w.textContent = `W ${f.w} · ${strength(f.w)}`;
+  });
+
+  $("hydOut").textContent = `${r.total.water} g water`;
+  $("saltOut").textContent = `${r.total.salt} g`;
+
+  $("rTotal").textContent = r.total.flour + r.total.water + r.total.salt;
+  $("rSide").innerHTML = `${s.balls} × ${s.ball} g<br>${r.bowlCount} ${r.bowlCount === 1 ? "bowl" : "bowls"} · ${h > 0 ? h + " h" : "check times"}`;
+
+  const dry = s.yeast === "dry", solutionOn = dry && s.weigh === "solution";
+  const cols = r.bowlCount === 1 ? [r.total] : [...r.bowls, r.total];
+  const head = r.bowlCount === 1 ? ["Total"] :
+    [...r.bowls.map(b => `${b.count} × bowl<br>of ${b.balls} balls`), "Total"];
+  const pick = (k, f) => cols.map(c => f ? f(c[k]) : c[k]);
+  let html = `<thead><tr><th>Ingredient, grams</th>${head.map(t => `<th>${t}</th>`).join("")}</tr></thead><tbody>`;
+  s.flours.forEach((f, i) => { html += row(`${esc(flourName(f, i))} <small>${p[i]}%</small>`, cols.map(c => c.parts[i])); });
+  html += row(`Water <small>${s.hyd}%, includes everything below</small>`, pick("water"));
+  html += row("In the bowl", pick("plain"), "sub");
+  if (solutionOn) html += row("Yeast solution", pick("solution", fmtS), "sub");
+  html += row("Held back, add with the salt", pick("held"), "sub last-sub");
+  html += row("Fine sea salt", pick("salt"));
+  const yPct = dry ? r.freshPct / 3 : r.freshPct;
+  html += row(`${dry ? "Instant dry yeast" : "Fresh yeast"} <small>${yPct.toFixed(dry ? 3 : 2)}%</small>`, pick("yeast", y => fmtY(y, dry)));
+  $("table").innerHTML = html + "</tbody>";
+
+  const notes = [];
+  if (solutionOn) notes.push(`<p><b>Yeast solution:</b> empty a 7 g sachet into a glass, add water to 70 g total and stir. Each 1 g carries 0.1 g yeast. It settles fast, so stir right before every portion and use it within 15–20 min.</p>`);
+  if (s.style === "canotto" && (s.ball < 260 || s.ball > 270)) notes.push(`<p class="flag">The canotto standard is 260–270 g, which opens to 28–30 cm.</p>`);
+  $("notes").innerHTML = notes.join("");
+  $("notes").hidden = !notes.length;
+
+  const strongShare = s.flours.reduce((t, f, i) => t + (f.w >= 350 ? p[i] : 0), 0);
+  renderCheck(h, blend, s.hyd, strongShare);
+
+  const planOk = h >= 4;
+  $("timeline").innerHTML = planOk ? renderTimeline(s, auto ? autoHours(s) : h, r)
+    : `<p class="hint">Choose a start and bake time at least 4 h apart to see the timeline.</p>`;
+  $("savedNote").hidden = !planOk;
+  markNow();
+  try { localStorage.setItem(STORE, JSON.stringify(s)); } catch (e) {}
+}
+
+function refreshFlours() { renderFlours(); render(); }
+
+document.addEventListener("click", e => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.dataset.step) {
+    state.balls = Math.min(36, Math.max(1, state.balls + +t.dataset.step));
+    return render();
+  }
+  if (t.dataset.open) {
+    const i = +t.dataset.open;
+    openFlour = openFlour === i ? null : i;
+    return refreshFlours();
+  }
+  if (t.dataset.share) {
+    const [i, v] = t.dataset.share.split(":").map(Number);
+    state.flours[i].share = v;
+    return refreshFlours();
+  }
+  if (t.dataset.remove) {
+    state.flours.splice(+t.dataset.remove, 1);
+    openFlour = null;
+    return refreshFlours();
+  }
+  if (t.id === "now") {
+    const d = nextQuarter(new Date());
+    state.startDate = isoDay(d);
+    state.startTime = hhmm(d);
+    return render();
+  }
+  if (t.id === "addFlour") {
+    state.flours.push({ name: "", w: 300, share: 10 });
+    openFlour = state.flours.length - 1;
+    return refreshFlours();
+  }
+  if (t.id === "reset") {
+    state = newState();
+    openFlour = null;
+    renderStyle();
+    return refreshFlours();
+  }
+  const id = t.parentElement.id;
+  if (id && t.dataset.v !== undefined) {
+    const v = t.dataset.v;
+    state[id] = isNaN(+v) ? v : +v;
+    if (id === "endDay") state.hours = "auto";
+    if (id === "style") {
+      const st = STYLES[v];
+      state.hyd = st.defHyd;
+      state.ball = st.defBall;
+      renderStyle();
+    }
+    render();
+  }
+});
+document.addEventListener("input", e => {
+  const t = e.target;
+  if (t.dataset.w) { state.flours[+t.dataset.w].w = +t.value; render(); }
+  if (t.dataset.name) { state.flours[+t.dataset.name].name = t.value; render(); }
+});
+["startTime", "endTime"].forEach(k => $(k).addEventListener("change", e => {
+  if (e.target.value) {
+    state[k] = e.target.value;
+    if (k === "startTime") state.startDate = isoDay(new Date());
+    if (k === "endTime") state.hours = "auto";
+  }
+  render();
+}));
+document.addEventListener("change", e => {
+  const i = e.target.dataset.pick;
+  if (i === undefined) return;
+  const found = FLOUR_LIST.find(o => o && o.name === e.target.value);
+  state.flours[+i].name = found ? found.name : "";
+  if (found) state.flours[+i].w = found.w;
+  refreshFlours();
+});
+renderStyle();
+refreshFlours();
+</script>
+</body>
+</html>
