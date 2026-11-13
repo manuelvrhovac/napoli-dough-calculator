@@ -18,7 +18,7 @@ body { margin: 0; font-size: 14px; }
   --green: #256b43; --green-end: #35905a; --green-bg: #e3f3e8; --on-green: #ffffff;
   --caution: #8a4b08; --caution-bg: #fdf0d8;
   --warn: #a81f1a; --warn-bg: #fde7e3;
-  --c-flour: #b0730f; --c-yeast: #6f4fc4; --c-water: #1b78c9; --c-salt: #4f6b82; --c-pizza: #d0401f;
+  --c-flour: #b0730f; --flour-tint: rgba(176, 115, 15, .08); --c-yeast: #6f4fc4; --c-water: #1b78c9; --c-salt: #4f6b82; --c-pizza: #d0401f;
   --c-bread: #a9651c; --c-fridge: #0d8ca6; --c-temp: #d12f6c; --c-scale: #0f8a6c; --c-bubbles: #2f9bd6;
   --c-flame: #e8590c; --c-clock: #4b57d1;
   --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", system-ui, sans-serif;
@@ -30,18 +30,30 @@ body { font-variant-numeric: tabular-nums; background: var(--bg); color: var(--f
 .config { display: grid; gap: 10px; min-width: 0; }
 .cfg-body { display: grid; gap: 10px; min-width: 0; }
 .cfg-group { display: grid; gap: 14px; padding: 10px 8px; background: var(--panel); border-radius: 10px; min-width: 0; }
+details.more { display: block; }
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary { position: relative; display: block; list-style: none; padding-right: 22px; cursor: pointer; }
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary::after { content: ""; position: absolute; top: 6px; right: 4px; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .15s; }
+.more[open] > summary::after { top: 10px; transform: rotate(-135deg); }
+.more-t { display: none; justify-content: space-between; align-items: baseline; gap: 12px; font-weight: 700; }
+.more-t output { font: 500 .95rem var(--mono); color: var(--muted); }
+.more[open] .more-t { display: flex; }
+.more[open] .more-list { display: none; }
+.more-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.more-body { display: grid; gap: 14px; margin-top: 8px; }
+.mini-warn { margin: 6px 0 0; padding: 6px 8px; border-radius: 6px; background: var(--caution-bg); color: var(--caution); font-size: .85rem; }
 .flush { margin: 0; }
-.summary { position: relative; display: block; width: 100%; padding: 12px 26px 12px 10px; background: var(--tint); border: 1px solid var(--tint-line); border-radius: 10px; color: var(--fg); font: inherit; text-align: left; cursor: pointer; touch-action: manipulation; }
-.sum-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 8px; }
-.sum-item { display: block; min-width: 0; }
-.sum-item b { display: block; font: 700 1.1rem/1.15 var(--display); color: var(--accent); }
-.sum-item small { display: block; font-size: .78rem; color: var(--muted); }
 .chev { width: 16px; height: 16px; flex: none; }
-.summary .chev { position: absolute; right: 8px; bottom: 10px; color: var(--muted); opacity: .6; }
+.more-list li { display: block; font-size: .95rem; line-height: 1.3; }
+.more-list .one-line { display: flex; flex-wrap: wrap; gap: 4px 7px; font-size: .86rem; }
+.more-list .one-line span { white-space: nowrap; }
+.more-list .one-line .ico { margin-right: 3px; }
+.more-list .sep { display: inline-block; width: 6px; }
+.more-list b { font-weight: 700; }
+.more-list i { font-style: normal; color: var(--muted); }
+.i-alert { color: var(--caution); }
 .collapse { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 44px; padding: 0 12px; background: none; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); font: 600 .95rem var(--body); cursor: pointer; }
-.cfg-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.cfg-foot.ask span { margin-right: auto; font-weight: 600; }
-.danger { min-height: 44px; padding: 0 18px; background: #c8372b; border: 0; border-radius: 8px; color: #fff; font: 700 .95rem var(--body); cursor: pointer; }
 .how summary { padding: 8px 0 0; font-size: .92rem; font-weight: 600; color: var(--accent); cursor: pointer; }
 .how-body { margin-top: 6px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; font-size: .92rem; }
 .how-body p { margin: 0 0 6px; }
@@ -55,41 +67,122 @@ body { font-variant-numeric: tabular-nums; background: var(--bg); color: var(--f
   padding-right: max(8px, env(safe-area-inset-right, 0px));
   display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr);
 }
-h1 { font: 700 1.5rem/1.1 var(--display); margin: 0; text-align: center; text-wrap: balance; letter-spacing: -.01em; }
+.top { position: relative; padding: 4px 56px; }
+h1 { font: 700 1.3rem/1.15 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; margin: 0; text-align: center; letter-spacing: .01em; color: var(--fg); }
+h1 span { font-style: italic; color: var(--accent); }
+.reset-link { min-height: 32px; padding: 0 4px; border: 0; background: none; color: var(--muted); font: 600 .82rem var(--body); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.reset-link.warn { color: #c8372b; }
+.top > .reset-link, .reset-ask { position: absolute; top: 50%; right: 0; transform: translateY(-50%); }
+.reset-ask { display: flex; align-items: center; gap: 2px; font-size: .78rem; font-weight: 600; color: var(--fg); white-space: nowrap; background: var(--bg); }
 h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .group { display: grid; gap: 16px; align-content: start; min-width: 0; }
 .lbl { display: block; font-weight: 700; margin-bottom: 6px; }
 .stepper { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .stepper button { border: 0; background: none; color: var(--accent); font: 600 1.5rem/1 var(--mono); height: 52px; cursor: pointer; touch-action: manipulation; }
 .stepper output { text-align: center; font: 600 1.25rem var(--mono); }
+.inline-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.yeast-row .seg { flex: 0 1 220px; }
+.fold-row .seg { flex: 0 1 180px; }
+.fold-row .seg button { min-height: 36px; }
+.yeast-row .seg button { min-height: 40px; }
+.yeast-row + .how summary { padding-top: 4px; }
+.balls-row .stepper { grid-template-columns: 30px auto 30px; }
+.flour-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.fl-head { min-width: 0; padding-top: 8px; }
+.fl-sub { margin: 4px 0 0; font-size: .8rem; line-height: 1.3; color: var(--muted); }
+.fl-sub b { color: var(--fg); font-weight: 600; }
+.fl-steps { flex: none; display: flex; align-items: flex-start; gap: 4px; }
+#blendBtn { margin-top: 6px; }
+.stepper.mini { grid-template-columns: 24px auto 24px; }
+.stepper.mini button { height: 34px; padding: 0; font-size: 1.05rem; }
+.stepper.mini output { padding: 0 2px; font-size: .9rem; white-space: nowrap; }
+.stepper.mini.main { grid-template-columns: 29px auto 29px; }
+.stepper.mini.main button { height: 41px; font-size: 1.26rem; }
+.stepper.mini.main output { padding: 0 3px; font-size: 1.08rem; }
+.blend { margin-top: -14px; padding: 12px 8px 6px; background: var(--flour-tint); border-radius: 0 0 10px 10px; }
+.flour-wrap.blending { padding: 6px 8px 0; background: var(--flour-tint); border-radius: 10px 10px 0 0; }
+.pm-day { display: grid; gap: 6px; padding-top: 8px; border-top: 1px solid var(--line); }
+.pm-day:first-child { padding-top: 0; border-top: 0; }
+.pm-fixed { --c: var(--fg); --bg: var(--panel); }
+.pm-fixed .pm-word { font-size: .92rem; }
+.pm-fixed .pm-chips { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pm-fixed .pm-chip { padding: 8px 2px; }
+.pm-fixed .pm-chip b { font-size: .95rem; }
+.pm-h { display: flex; align-items: baseline; gap: 8px; margin: 0; }
+.pm-word { font: 800 1.05rem var(--display); color: var(--fg); }
+.pm-date { font-size: .78rem; font-weight: 600; color: var(--muted); }
+.pm-row { --c: #b07a00; --bg: #fff7df; display: flex; align-items: center; gap: 6px; }
+.pm-row.midday { --c: #c4561a; --bg: #fdeee3; }
+.pm-row.dinner { --c: #4b4fc4; --bg: #eef0ff; }
+.pm-l { flex: none; width: 62px; font-size: .82rem; font-weight: 700; color: var(--c); white-space: nowrap; }
+.pm-l .ico { width: 1.2em; height: 1.2em; margin-right: 3px; color: var(--c); }
+.pm-chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; flex: 1; }
+.pm-chip { display: grid; justify-items: center; padding: 4px 2px; background: var(--bg); border: 1px solid transparent; border-radius: 8px; color: var(--fg); cursor: pointer; touch-action: manipulation; }
+.pm-chip b { font: 700 .86rem var(--mono); }
+.pm-chip small { font-size: .76rem; font-weight: 600; color: var(--muted); }
+.pm-chip[aria-pressed="true"] { background: var(--c); }
+.pm-chip[aria-pressed="true"] b, .pm-chip[aria-pressed="true"] small { color: #fff; }
+.pm-chip:disabled { opacity: .35; cursor: not-allowed; }
+.ftl { display: grid; gap: 3px; }
+.ftl-days, .ftl-times { position: relative; height: 15px; font-size: .72rem; line-height: 15px; color: var(--muted); }
+.ftl-day { position: absolute; top: 0; padding-left: 3px; border-left: 1px solid var(--line); white-space: nowrap; }
+.ftl-times { display: flex; justify-content: space-between; font-weight: 600; color: var(--fg); }
+.ftl-times .ico { width: 1.15em; height: 1.15em; margin: 0 0 0 2px; }
+.ftl-mark { position: absolute; top: 0; transform: translateX(-50%); font-weight: 600; color: #3e86b6; white-space: nowrap; }
+.ftl-mark .ico { width: 1.1em; height: 1.1em; margin: 0 1px 0 0; color: inherit; }
+.ftl-tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(255, 255, 255, .85); }
+.ftl-track { position: relative; height: 30px; border-radius: 9px; overflow: hidden; background: var(--line); box-shadow: inset 0 1px 2px rgba(31, 26, 23, .12); }
+.ftl-seg { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; color: #fff; font: 700 .7rem var(--body); letter-spacing: .03em; text-transform: uppercase; white-space: nowrap; text-shadow: 0 1px 2px rgba(0, 0, 0, .25); }
+.ftl-seg.mix { background: linear-gradient(90deg, #c98a2e, #dca04a); }
+.ftl-seg.warm { background: linear-gradient(90deg, #dca04a, #ecb968); }
+.ftl-seg.cold { background: linear-gradient(90deg, #5aa7cc, #3e86b6 50%, #5aa7cc); }
+.ftl-seg.rise { background: linear-gradient(90deg, #ecb968, #e2703a 40%, #cf4a22); }
+.ftl-night { position: absolute; top: 0; bottom: 0; display: flex; justify-content: flex-start; padding: 2px 0 0 4px; background: linear-gradient(180deg, rgba(20, 28, 70, .38), rgba(20, 28, 70, .22)); color: rgba(255, 255, 255, .9); font-size: .62rem; line-height: 1; pointer-events: none; }
+.ftl-mini { position: relative; display: block; height: 10px; margin: 10px 0 2px; border-radius: 5px; overflow: hidden; background: var(--line); }
+.ftl-mini .ftl-seg, .ftl-mini .ftl-night { font-size: 0; padding: 0; text-shadow: none; }
+.more[open] .ftl-mini { display: none; }
+.ftl-mid { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255, 255, 255, .55); }
+.blend-grid { display: grid; grid-template-columns: auto auto auto auto 1fr; align-items: center; gap: 6px 8px; }
+.blend .op { font: 600 1.5rem/1 var(--body); color: var(--accent); }
+.blend-result { justify-self: end; font: 700 1.25rem var(--mono); color: var(--accent); white-space: nowrap; }
+.blend-share { justify-self: center; font: 600 .9rem var(--mono); color: var(--muted); }
+.link.cancel-blend { min-height: 36px; margin-top: 4px; font: 600 .85rem var(--body); color: var(--warn); }
+.fl-btn { height: 28px; padding: 0 10px; background: var(--tint); border: 1px solid var(--tint-line); border-radius: 999px; color: var(--accent); font: 700 .78rem var(--body); cursor: pointer; touch-action: manipulation; }
+.balls-row .stepper button { height: 32px; font-size: 1.1rem; }
+.balls-row .stepper output { padding: 0 2px; font-size: .92rem; white-space: nowrap; }
 .seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
 .seg button { border: 0; border-radius: 5px; background: none; color: var(--fg); font: 700 1rem/1.15 var(--body); min-height: 44px; padding: 6px 2px; cursor: pointer; touch-action: manipulation; }
 .seg button small { display: block; font: 400 .72rem/1.15 var(--body); margin-top: 2px; opacity: .85; }
 .seg button[aria-pressed="true"] { background: linear-gradient(120deg, var(--accent), var(--accent-end)); color: var(--on-accent); }
 .seg button:disabled { opacity: .35; cursor: not-allowed; }
+.arch { position: relative; z-index: 1; width: 82%; margin: 0 auto; aspect-ratio: 400 / 96.8; }
+.arc-btn { position: absolute; inset: 0; padding: 0; border: 0; background: none; pointer-events: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.arc-btn svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.arc-seg { pointer-events: auto; fill: var(--surface); stroke: var(--line); stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(31, 26, 23, .08)); transition: fill .15s; }
+.arc-btn[aria-pressed="true"] .arc-seg { fill: url(#arcGrad); stroke: none; }
+.arc-btn:focus-visible { outline: none; }
+.arc-btn:focus-visible .arc-seg { stroke: var(--accent); stroke-width: 3; }
+.arc-t { font: 800 21.3px var(--display); fill: var(--fg); text-anchor: middle; pointer-events: none; }
+.arc-s { font: 500 13.5px var(--body); fill: var(--muted); text-anchor: middle; pointer-events: none; }
+.arc-btn[aria-pressed="true"] .arc-t, .arc-btn[aria-pressed="true"] .arc-s { fill: var(--on-accent); }
+.pic-wrap { position: relative; z-index: 0; margin: -24px 0 -12px; }
+.style-pic { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: contain; }
+.pic-help { position: absolute; right: 4px; bottom: 4px; width: 34px; height: 34px; padding: 0; border: 2px solid var(--surface); border-radius: 50%; background: var(--tint); color: var(--accent); font: 800 1.05rem/1 var(--body); box-shadow: 0 2px 8px rgba(163, 42, 18, .28); cursor: pointer; touch-action: manipulation; }
+.pic-help[aria-expanded="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.pic-tip { position: absolute; right: 4px; bottom: 44px; left: 18%; z-index: 2; margin: 0; padding: 8px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(31, 26, 23, .14); font-size: .88rem; line-height: 1.35; color: var(--fg); }
 .hint { margin: 6px 0 0; font-size: .9rem; color: var(--muted); }
+.preset-menu { position: absolute; z-index: 5; top: 46px; left: 0; right: 0; display: grid; gap: 8px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 22px 50px rgba(31, 26, 23, .32), 0 4px 12px rgba(31, 26, 23, .14), 0 0 0 100vmax rgba(31, 26, 23, .14); }
 .head-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .head-row output { font: 500 .95rem var(--mono); color: var(--muted); }
 .time { -webkit-appearance: none; appearance: none; display: block; width: 100%; max-width: 100%; min-width: 0; height: 52px; padding: 0 12px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; font: 600 1.25rem var(--mono); }
 .flag { margin: 0; font-size: .95rem; background: var(--warn-bg); color: var(--warn); padding: 8px 10px; border-radius: 6px; }
-input[type=range] { display: block; width: 100%; height: 40px; accent-color: var(--accent); margin: 0; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-.flours { display: grid; gap: 8px; }
-.flour { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
-.flour-head { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 0; background: none; color: var(--fg); font: 700 1rem var(--body); text-align: left; padding: 10px 8px; min-height: 52px; cursor: pointer; }
-.flour-head span:first-child { min-width: 0; overflow-wrap: anywhere; }
-.flour-head .meta { flex: none; font: 500 .9rem var(--mono); color: var(--muted); }
-.flour-body { display: grid; gap: 12px; padding: 0 8px 10px; }
-.text { display: block; width: 100%; min-width: 0; height: 48px; padding: 0 12px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; font: 400 1rem var(--body); }
-.scale { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); }
 .link { border: 0; background: none; color: var(--accent); font: 700 1rem var(--body); min-height: 44px; cursor: pointer; padding: 0; }
 .link:disabled { opacity: .4; cursor: not-allowed; }
 .add { background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; }
-.remove { justify-self: start; color: var(--warn); }
 
-.now { border: 0; border-radius: 8px; padding: 0 22px; min-height: 52px; background: linear-gradient(120deg, var(--green), var(--green-end)); color: var(--on-green); font: 700 1rem var(--body); cursor: pointer; touch-action: manipulation; }
-.select { display: block; width: 100%; min-width: 0; height: 48px; padding: 0 10px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; font: 400 1rem var(--body); }
+.now { justify-self: start; border: 0; padding: 0; background: none; color: var(--green); font: 600 .85rem var(--body); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; touch-action: manipulation; }
 .plan { display: grid; gap: 14px; min-width: 0; }
 .plan-day { margin: 0; justify-self: start; padding: 3px 10px; border-radius: 99px; background: var(--tint); border: 1px solid var(--tint-line); color: var(--accent); font: 700 .9rem var(--body); }
 .tl { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -104,6 +197,14 @@ input[type=range] { display: block; width: 100%; height: 40px; accent-color: var
 .tl-top { display: flex; align-items: baseline; gap: 8px; }
 .tl-title { min-width: 0; }
 .tl-head { display: flex; align-items: center; gap: 6px; }
+.end-btn { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; height: 46px; padding: 0 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; color: var(--fg); text-align: left; cursor: pointer; touch-action: manipulation; }
+.end-btn b { font: 600 1.05rem var(--mono); }
+.end-btn .chev { flex: none; width: 16px; height: 16px; color: var(--muted); transition: transform .15s; }
+.end-btn[aria-expanded="true"] { border-color: var(--accent); }
+.end-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.end-day { margin: 0; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.pm-custom { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.pm-custom .time { height: 42px; }
 .when-top { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
 .shift { display: inline-flex; gap: 2px; }
 .shift button { min-width: 30px; height: 24px; padding: 0 4px; background: none; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font: 500 .78rem var(--body); cursor: pointer; touch-action: manipulation; }
@@ -112,7 +213,6 @@ input[type=range] { display: block; width: 100%; height: 40px; accent-color: var
 .i-pizza { color: var(--c-pizza); } .i-bread { color: var(--c-bread); } .i-fridge { color: var(--c-fridge); } .i-temp { color: var(--c-temp); }
 .i-scale { color: var(--c-scale); } .i-bubbles { color: var(--c-bubbles); } .i-flame { color: var(--c-flame); } .i-clock { color: var(--c-clock); }
 .pill .ico { width: 1.3em; height: 1.3em; margin-right: 0; vertical-align: 0; }
-.sum-item small .ico { margin-right: 3px; }
 .note { display: block; color: var(--muted); font-size: .92rem; }
 .pills { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
 .pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px 3px 7px; border-radius: 99px; background: var(--panel); border: 1px solid var(--line); font-size: .85rem; line-height: 1.2; }
@@ -120,32 +220,40 @@ input[type=range] { display: block; width: 100%; height: 40px; accent-color: var
 .tl-days { display: grid; gap: 16px; }
 .tl-day { display: grid; gap: 8px; }
 .saved { color: var(--muted); font-size: .9rem; margin: 0; }
-.when { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 8px; }
+.when { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
 .time::-webkit-date-and-time-value { min-width: 0; margin: 0; padding: 0; text-align: left; line-height: 44px; }
 .when-col { display: grid; gap: 6px; align-content: start; min-width: 0; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
 .when-h { margin: 0; font: 600 1.05rem var(--display); }
 .when-sub { margin: 0; font-size: .82rem; line-height: 1.2; color: var(--muted); }
 .when .time { height: 46px; padding: 0 6px; line-height: 44px; font-size: 1.05rem; background: var(--bg); }
-.when .now { min-height: 46px; padding: 0 4px; font-size: .88rem; }
+.when .now { min-height: 0; line-height: 1.3; white-space: nowrap; }
 .days { background: var(--bg); gap: 2px; padding: 2px; }
 .days button { min-height: 42px; font-size: .72rem; padding: 2px 1px; }
 
-.check { display: grid; gap: 8px; padding: 10px 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
-.check-pill { padding: 3px 10px; border-radius: 99px; font: 700 .9rem var(--body); background: var(--green-bg); color: var(--green); }
-.check[data-level="caution"] .check-pill { background: var(--caution-bg); color: var(--caution); }
-.check[data-level="risk"] .check-pill { background: var(--warn-bg); color: var(--warn); }
-.check-body { display: grid; gap: 10px; }
-.check-body p { margin: 0; }
-.check-range { color: var(--muted); font-size: .92rem; }
+.checks { display: grid; gap: 6px; }
+.checks:empty { display: none; }
+#secCheck[data-level="caution"] { background: var(--caution-bg); }
+#secCheck[data-level="risk"] { background: var(--warn-bg); }
+#secCheck[data-level="good"] { background: var(--green-bg); }
+#secCheck .finding { background: var(--surface); }
+#secCheck .finding.ok { background: none; padding: 0; }
+.more-list .chk { font-weight: 600; color: var(--caution); }
+.more-list .chk[data-level="risk"], .more-list .chk[data-level="risk"] .ico { color: var(--warn); }
+.more-list .chk.ok { color: var(--green); }
+.checks p { margin: 0; }
+.finding.ok { padding: 6px 10px; background: var(--green-bg); color: var(--green); font-size: .88rem; font-weight: 600; }
 .finding { display: grid; gap: 2px; padding: 8px; border-radius: 6px; background: var(--caution-bg); font-size: .95rem; }
 .finding[data-level="risk"] { background: var(--warn-bg); }
 .finding b { color: var(--caution); }
 .finding[data-level="risk"] b { color: var(--warn); }
 .finding .fix { font-weight: 700; }
-.wip { margin: 0; color: var(--muted); font-size: .82rem; }
+.f-area { font-size: .75rem; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--caution); opacity: .8; }
+.finding[data-level="risk"] .f-area { color: var(--warn); }
+.sum-pic { position: absolute; top: 0; right: 22px; width: 125px; height: auto; pointer-events: none; }
+.more[open] .sum-pic { display: none; }
 
 .slip { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; }
-.slip-note { margin: 0; padding: 7px 8px; font-size: .85rem; color: var(--muted); border-top: 1px solid var(--line); }
+.slip-note { margin: 0; padding: 5px 8px; font-size: .75rem; color: var(--muted); border-top: 1px solid var(--line); }
 .scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 th, td { padding: 8px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
@@ -155,7 +263,7 @@ td { font: 500 1rem var(--mono); }
 td:last-child { font-weight: 700; color: var(--accent); }
 tbody tr:last-child td { border-bottom: 0; }
 td:first-child { font: 400 1rem/1.25 var(--body); }
-td small { display: block; color: var(--muted); font-size: .82rem; }
+td small { margin-left: 4px; color: var(--muted); font-size: .8rem; font-weight: 400; white-space: nowrap; }
 tr.sub td { padding-block: 4px; font-size: .9rem; font-weight: 400; color: var(--muted); border-bottom: 0; }
 tr.sub td:first-child { padding-left: 18px; font-size: .92rem; }
 tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
@@ -165,52 +273,54 @@ tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-flour" viewBox="0 0 512 512"><path fill="currentColor" d="M275.8 42.39c-18.5.45-46.9 19.85-69 40.34c-4.6 4.26-8.8 8.41-12.7 12.39c56.2 2.45 109.2-.36 161.8-4.21c-5.1-4.92-11-10.33-17.6-15.86c-20.5-17.21-46.6-33.05-62.5-32.66M436 102.9c-100 7.3-198.7 18.6-313.9 4.3c-5.2 5.1-7.9 9.6-8.7 13.3c-.7 3.6-.2 6.9 2.2 11.1c113.5 25.3 227 25.9 327.2-6.6c.5-2.8.1-5.7-1.1-9.4c-1.2-3.8-3.3-8.1-5.7-12.7m-12.5 46.6c-89.1 23.9-186.5 23.7-284.1 5.4c-23.9 92.3-70 175.4-56.93 272.7l1.16 8.6l-8.57 1.5c-9.83 1.6-23.83 10.3-31.95 19.3c-4.07 4.5-6.59 9-7.18 11.5c-.59 2.4-.94 1.4.33 2.2c5.18 3.5 21 5.4 37.83 2.8s34.81-8.9 45.71-15.8l3-1.9l3.5.7c87.2 16.5 166.5 24.8 254 3.6l4.3-1.1l3.5 2.8c5.6 4.6 23.7 8.4 42.4 9c17 .6 33.8-.5 45.2-1c-1.1-3-3.3-7.6-6.6-12.5c-4.2-6-9.5-12.2-14.5-16.9c-5.1-4.7-10.4-7.4-11.1-7.6l-8.9-1.7l1.8-8.9c18.1-89.2 26.5-179.5-12.9-272.7M271 184.9c59.3 0 106.2 54.7 106.2 120.6S330.3 426.1 271 426.1s-106.2-54.7-106.2-120.6S211.7 184.9 271 184.9m0 18c-48.1 0-88.2 45.2-88.2 102.6c0 52.7 33.8 95.1 76.6 101.7l2-39.1c-30.8-6-39.8-39.4-39.9-51.7c9.3 1 30 8.3 41.3 24.8l1.3-24.4c-30.9-5.9-39.9-39.4-40-51.7c9.2 1 30.1 8.3 41.4 25l1.3-24.3c-17.8-7.4-23.3-29.1-23.4-37.5c8 .8 27.4 8.2 33.9 25.5c8.4-16.4 28.3-21.7 36.2-21.7c-.9 8.8-9 30.6-28.8 35.4l-1.2 23.3c12.9-15.3 34.3-20.4 43.7-20.3c-1.5 12.1-13.8 44.5-45.1 47.2l-1.3 24.6c12.9-15.4 34.4-20.5 43.7-20.5c-1.3 12.1-13.7 44.6-45.1 47.2l-2 38.8c45.2-3.8 81.8-47.5 81.8-102.3c0-57.4-40.1-102.6-88.2-102.6"/></symbol><symbol id="i-yeast" viewBox="0 0 24 24"><path fill="currentColor" d="M18 14a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4l.09-.85c-.04-.7-.17-1.31-.54-1.65c-.2-.2-.48-.31-.8-.37c-.96.55-2.07.87-3.25.87A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.18-.32 2.29-.87 3.25c.06.32.17.6.37.8c.34.37.95.5 1.65.54zM7.5 10A1.5 1.5 0 0 1 9 11.5A1.5 1.5 0 0 1 7.5 13A1.5 1.5 0 0 1 6 11.5A1.5 1.5 0 0 1 7.5 10m2-5C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5"/></symbol><symbol id="i-wheat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12.014 21.514v-3.75M5.93 9.504l-.43 1.604a4.986 4.986 0 0 0 3.524 6.105q1.495.402 2.99.801v-3.44a4.98 4.98 0 0 0-3.676-4.426z"/><path d="M13.744 11.164a4.9 4.9 0 0 0 1.433-3.46a4.88 4.88 0 0 0-1.433-3.46l-1.73-1.73l-1.73 1.73a4.9 4.9 0 0 0-1.433 3.46a4.9 4.9 0 0 0 1.433 3.46"/><path d="m18.099 9.504l.43 1.604a4.986 4.986 0 0 1-3.525 6.105l-2.99.801v-3.44a4.98 4.98 0 0 1 3.677-4.426z"/></g></symbol><symbol id="i-water" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0s3.262-5.708 1.566-8.546l-4.89-7.26c-.42-.625-1.287-.803-1.936-.397a1.4 1.4 0 0 0-.41.397l-4.893 7.26C4.24 13.715 4.9 17.318 7.502 19.423"/></symbol><symbol id="i-salt" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 13v.01M10 16v.01m4-.01v.01M7.5 8h9l-.281-2.248A2 2 0 0 0 14.234 4H9.766A2 2 0 0 0 7.78 5.752z"/><path d="m7.5 8l-1.612 9.671A2 2 0 0 0 7.861 20h8.278a2 2 0 0 0 1.973-2.329L16.5 8"/></g></symbol><symbol id="i-pizza" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 21.5c-3.04 0-5.952-.714-8.5-1.983L12 3l8.5 16.517A19.1 19.1 0 0 1 12 21.5"/><path d="M5.38 15.866a14.94 14.94 0 0 0 6.815 1.634a14.94 14.94 0 0 0 6.502-1.479M13 11.01V11m-2 3v-.01"/></g></symbol><symbol id="i-bread" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 4a3 3 0 0 1 2 5.235V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9.236a3 3 0 0 1 1.824-5.231H18z"/></symbol><symbol id="i-fridge" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2zm0 5h14M9 13v3M9 6v1"/></symbol><symbol id="i-temp" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 13.5a4 4 0 1 0 4 0V5a2 2 0 0 0-4 0zM10 9h4"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20h10M6 6l6-1l6 1m-6-3v17m-3-8L6 6l-3 6a3 3 0 0 0 6 0m12 0l-3-6l-3 6a3 3 0 0 0 6 0"/></symbol><symbol id="i-bubbles" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M7.001 15.085A1.5 1.5 0 0 1 9 16.5"/><circle cx="18.5" cy="8.5" r="3.5"/><circle cx="7.5" cy="16.5" r="5.5"/><circle cx="7.5" cy="4.5" r="2.5"/></g></symbol><symbol id="i-flame" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10.941c2.333-3.308.167-7.823-1-8.941c0 3.395-2.235 5.299-3.667 6.706C5.903 10.114 5 12 5 14.294C5 17.998 8.134 21 12 21s7-3.002 7-6.706c0-1.712-1.232-4.403-2.333-5.588c-2.084 3.353-3.257 3.353-4.667 2.235"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0"/><path d="M12 7v5l3 3"/></g></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-flour" viewBox="0 0 512 512"><path fill="currentColor" d="M275.8 42.39c-18.5.45-46.9 19.85-69 40.34c-4.6 4.26-8.8 8.41-12.7 12.39c56.2 2.45 109.2-.36 161.8-4.21c-5.1-4.92-11-10.33-17.6-15.86c-20.5-17.21-46.6-33.05-62.5-32.66M436 102.9c-100 7.3-198.7 18.6-313.9 4.3c-5.2 5.1-7.9 9.6-8.7 13.3c-.7 3.6-.2 6.9 2.2 11.1c113.5 25.3 227 25.9 327.2-6.6c.5-2.8.1-5.7-1.1-9.4c-1.2-3.8-3.3-8.1-5.7-12.7m-12.5 46.6c-89.1 23.9-186.5 23.7-284.1 5.4c-23.9 92.3-70 175.4-56.93 272.7l1.16 8.6l-8.57 1.5c-9.83 1.6-23.83 10.3-31.95 19.3c-4.07 4.5-6.59 9-7.18 11.5c-.59 2.4-.94 1.4.33 2.2c5.18 3.5 21 5.4 37.83 2.8s34.81-8.9 45.71-15.8l3-1.9l3.5.7c87.2 16.5 166.5 24.8 254 3.6l4.3-1.1l3.5 2.8c5.6 4.6 23.7 8.4 42.4 9c17 .6 33.8-.5 45.2-1c-1.1-3-3.3-7.6-6.6-12.5c-4.2-6-9.5-12.2-14.5-16.9c-5.1-4.7-10.4-7.4-11.1-7.6l-8.9-1.7l1.8-8.9c18.1-89.2 26.5-179.5-12.9-272.7M271 184.9c59.3 0 106.2 54.7 106.2 120.6S330.3 426.1 271 426.1s-106.2-54.7-106.2-120.6S211.7 184.9 271 184.9m0 18c-48.1 0-88.2 45.2-88.2 102.6c0 52.7 33.8 95.1 76.6 101.7l2-39.1c-30.8-6-39.8-39.4-39.9-51.7c9.3 1 30 8.3 41.3 24.8l1.3-24.4c-30.9-5.9-39.9-39.4-40-51.7c9.2 1 30.1 8.3 41.4 25l1.3-24.3c-17.8-7.4-23.3-29.1-23.4-37.5c8 .8 27.4 8.2 33.9 25.5c8.4-16.4 28.3-21.7 36.2-21.7c-.9 8.8-9 30.6-28.8 35.4l-1.2 23.3c12.9-15.3 34.3-20.4 43.7-20.3c-1.5 12.1-13.8 44.5-45.1 47.2l-1.3 24.6c12.9-15.4 34.4-20.5 43.7-20.5c-1.3 12.1-13.7 44.6-45.1 47.2l-2 38.8c45.2-3.8 81.8-47.5 81.8-102.3c0-57.4-40.1-102.6-88.2-102.6"/></symbol><symbol id="i-yeast" viewBox="0 0 24 24"><path fill="currentColor" d="M18 14a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4l.09-.85c-.04-.7-.17-1.31-.54-1.65c-.2-.2-.48-.31-.8-.37c-.96.55-2.07.87-3.25.87A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.18-.32 2.29-.87 3.25c.06.32.17.6.37.8c.34.37.95.5 1.65.54zM7.5 10A1.5 1.5 0 0 1 9 11.5A1.5 1.5 0 0 1 7.5 13A1.5 1.5 0 0 1 6 11.5A1.5 1.5 0 0 1 7.5 10m2-5C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5"/></symbol><symbol id="i-wheat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12.014 21.514v-3.75M5.93 9.504l-.43 1.604a4.986 4.986 0 0 0 3.524 6.105q1.495.402 2.99.801v-3.44a4.98 4.98 0 0 0-3.676-4.426z"/><path d="M13.744 11.164a4.9 4.9 0 0 0 1.433-3.46a4.88 4.88 0 0 0-1.433-3.46l-1.73-1.73l-1.73 1.73a4.9 4.9 0 0 0-1.433 3.46a4.9 4.9 0 0 0 1.433 3.46"/><path d="m18.099 9.504l.43 1.604a4.986 4.986 0 0 1-3.525 6.105l-2.99.801v-3.44a4.98 4.98 0 0 1 3.677-4.426z"/></g></symbol><symbol id="i-water" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0s3.262-5.708 1.566-8.546l-4.89-7.26c-.42-.625-1.287-.803-1.936-.397a1.4 1.4 0 0 0-.41.397l-4.893 7.26C4.24 13.715 4.9 17.318 7.502 19.423"/></symbol><symbol id="i-salt" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 13v.01M10 16v.01m4-.01v.01M7.5 8h9l-.281-2.248A2 2 0 0 0 14.234 4H9.766A2 2 0 0 0 7.78 5.752z"/><path d="m7.5 8l-1.612 9.671A2 2 0 0 0 7.861 20h8.278a2 2 0 0 0 1.973-2.329L16.5 8"/></g></symbol><symbol id="i-pizza" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 21.5c-3.04 0-5.952-.714-8.5-1.983L12 3l8.5 16.517A19.1 19.1 0 0 1 12 21.5"/><path d="M5.38 15.866a14.94 14.94 0 0 0 6.815 1.634a14.94 14.94 0 0 0 6.502-1.479M13 11.01V11m-2 3v-.01"/></g></symbol><symbol id="i-bread" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 4a3 3 0 0 1 2 5.235V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9.236a3 3 0 0 1 1.824-5.231H18z"/></symbol><symbol id="i-fridge" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2zm0 5h14M9 13v3M9 6v1"/></symbol><symbol id="i-temp" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 13.5a4 4 0 1 0 4 0V5a2 2 0 0 0-4 0zM10 9h4"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20h10M6 6l6-1l6 1m-6-3v17m-3-8L6 6l-3 6a3 3 0 0 0 6 0m12 0l-3-6l-3 6a3 3 0 0 0 6 0"/></symbol><symbol id="i-bubbles" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M7.001 15.085A1.5 1.5 0 0 1 9 16.5"/><circle cx="18.5" cy="8.5" r="3.5"/><circle cx="7.5" cy="16.5" r="5.5"/><circle cx="7.5" cy="4.5" r="2.5"/></g></symbol><symbol id="i-flame" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10.941c2.333-3.308.167-7.823-1-8.941c0 3.395-2.235 5.299-3.667 6.706C5.903 10.114 5 12 5 14.294C5 17.998 8.134 21 12 21s7-3.002 7-6.706c0-1.712-1.232-4.403-2.333-5.588c-2.084 3.353-3.257 3.353-4.667 2.235"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0"/><path d="M12 7v5l3 3"/></g></symbol><defs><linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a32a12"/><stop offset="1" stop-color="#c2401f"/></linearGradient></defs><symbol id="i-sun" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0-8 0m-5 0h1m8-9v1m8 8h1m-9 8v1M5.6 5.6l.7.7m12.1-.7l-.7.7m0 11.4l.7.7m-12.1-.7l-.7.7"/></symbol><symbol id="i-sunset" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 17h1m16 0h1M5.6 10.6l.7.7m12.1-.7l-.7.7M8 17a4 4 0 0 1 8 0M3 21h18M12 3v6l3-3M9 6l3 3"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3h.393a7.5 7.5 0 0 0 7.92 12.446A9 9 0 1 1 12 2.992z"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m-1.637-9.409L2.257 17.125a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87L13.637 3.59a1.914 1.914 0 0 0-3.274 0zM12 16h.01"/></symbol></svg>
 <main class="page">
-  <header>
-    <h1>Napoli Pizza Calculator</h1>
+  <header class="top">
+    <h1><span>Napoli</span> Pizza Calculator</h1>
+    <button type="button" class="reset-link" id="reset">Reset</button>
+    <span class="reset-ask" id="resetAsk" hidden>Reset all? <button type="button" class="reset-link warn" id="resetYes">Yes</button><button type="button" class="reset-link" id="resetNo">No</button></span>
   </header>
 
   <section class="config" id="config" aria-label="Your dough">
-    <button type="button" class="summary" id="cfgOpen" aria-expanded="false" aria-label="Show all dough settings">
-      <span class="sum-grid" id="summary"></span>
-      <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-
-    <div class="cfg-body" id="cfgBody" hidden>
-      <button type="button" class="collapse" data-collapse>
-        <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 10l5-5 5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Collapse
-      </button>
-
-      <div class="cfg-group" aria-label="Batch">
+    <div class="cfg-body" id="cfgBody">
+      <details class="cfg-group more" id="secStyle">
+        <summary><span class="more-t" id="style-l">Pizza style</span><ul class="more-list" id="sumStyle"></ul><img class="sum-pic" id="sumPic" src="images/PizzaCanotto.webp" alt="" width="2048" height="1014" decoding="async"></summary>
+        <div class="more-body">
         <div>
-          <span class="lbl" id="style-l">Pizza style</span>
-          <div class="seg" id="style" role="group" aria-labelledby="style-l">
-            <button type="button" data-v="canotto">Canotto<small>Tall, puffy rim</small></button>
-            <button type="button" data-v="verace">Verace<small>Classic Naples</small></button>
+          <div class="arch" id="style" role="group" aria-labelledby="style-l">
+            <button type="button" class="arc-btn" data-v="canotto" aria-label="Canotto: Tall, puffy rim">
+              <svg viewBox="0 0 400 96.8" aria-hidden="true"><path class="arc-seg" d="M4.0 39.42A560.0 560.0 0 0 1 195.11 4.02L195.62 62.02A502.0 502.0 0 0 0 24.3 93.75Z"/><path id="arcT-canotto" d="M12.53 62.24A535.64 535.64 0 0 1 195.33 28.38" fill="none"/><path id="arcS-canotto" d="M19.83 81.8A514.76 514.76 0 0 1 195.51 49.26" fill="none"/>
+                <text class="arc-t"><textPath href="#arcT-canotto" startOffset="50%">Canotto</textPath></text><text class="arc-s"><textPath href="#arcS-canotto" startOffset="50%">Tall, puffy rim</textPath></text></svg>
+            </button>
+            <button type="button" class="arc-btn" data-v="verace" aria-label="Verace: Classic Naples">
+              <svg viewBox="0 0 400 96.8" aria-hidden="true"><path class="arc-seg" d="M204.89 4.02A560.0 560.0 0 0 1 396.0 39.42L375.7 93.75A502.0 502.0 0 0 0 204.38 62.02Z"/><path id="arcT-verace" d="M204.67 28.38A535.64 535.64 0 0 1 387.47 62.24" fill="none"/><path id="arcS-verace" d="M204.49 49.26A514.76 514.76 0 0 1 380.17 81.8" fill="none"/>
+                <text class="arc-t"><textPath href="#arcT-verace" startOffset="50%">Verace</textPath></text><text class="arc-s"><textPath href="#arcS-verace" startOffset="50%">Classic Naples</textPath></text></svg>
+            </button>
           </div>
-          <p class="hint" id="styleHint"></p>
+          <div class="pic-wrap">
+            <img class="style-pic" id="stylePic" src="images/PizzaCanotto.webp" alt="" width="2048" height="1014" decoding="async">
+            <button type="button" class="pic-help" id="styleHelp" aria-label="About this style" aria-expanded="false" aria-controls="styleHint">?</button>
+            <p class="pic-tip" id="styleHint" role="note" hidden></p>
+          </div>
         </div>
         <div>
-          <span class="lbl"><svg class="ico i-pizza" aria-hidden="true"><use href="#i-pizza"/></svg>Dough balls</span>
-          <div class="stepper">
-            <button type="button" data-step="-1" aria-label="One ball fewer">−</button>
-            <output id="balls"></output>
-            <button type="button" data-step="1" aria-label="One ball more">+</button>
-          </div>
+          <div class="head-row"><span class="lbl" id="hyd-l"><svg class="ico i-water" aria-hidden="true"><use href="#i-water"/></svg>Hydration</span><output id="hydOut"></output></div>
+          <div class="seg" id="hyd" role="group" aria-labelledby="hyd-l"></div>
+          <p class="hint" id="hydWhy"></p>
         </div>
         <div>
           <span class="lbl" id="ball-l"><svg class="ico i-scale" aria-hidden="true"><use href="#i-scale"/></svg>Grams per ball</span>
           <div class="seg" id="ball" role="group" aria-labelledby="ball-l"></div>
         </div>
-      </div>
+        </div>
+      </details>
 
-      <div class="cfg-group" aria-label="Fermentation">
-        <div class="head-row"><span class="lbl flush"><svg class="ico i-clock" aria-hidden="true"><use href="#i-clock"/></svg>Fermentation</span><output id="hoursOut"></output></div>
+      <details class="cfg-group more" id="secFerm">
+        <summary><span class="more-t"><span><svg class="ico i-clock" aria-hidden="true"><use href="#i-clock"/></svg>Fermentation</span><output id="hoursOut"></output></span><ul class="more-list" id="sumFerm"></ul><span class="ftl-mini" id="ftlMini" aria-hidden="true"></span></summary>
+        <div class="more-body">
         <div class="when">
           <div class="when-col">
-            <div class="when-top"><label class="lbl when-h" for="startTime">Start</label><span class="shift"><button type="button" data-shift="-5" aria-label="Start 5 minutes earlier">−5</button><button type="button" data-shift="5" aria-label="Start 5 minutes later">+5</button></span></div>
+            <label class="lbl when-h" for="startTime">Start</label>
             <p class="when-sub">Mixing ingredients</p>
             <input class="time" id="startTime" type="time">
             <button type="button" class="now" id="now">Use current time</button>
@@ -219,44 +329,72 @@ tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
           <div class="when-col">
             <span class="lbl when-h" id="end-l">End</span>
             <p class="when-sub">Baking in oven</p>
-            <div class="seg days" id="endDay" role="group" aria-labelledby="end-l">
-              <button type="button" data-v="0">Today</button>
-              <button type="button" data-v="1">Tomorrow</button>
-              <button type="button" data-v="2">Day after</button>
+            <button type="button" class="end-btn" id="presetBtn" aria-haspopup="true" aria-expanded="false" aria-controls="presetMenu" aria-labelledby="end-l endNow">
+              <b id="endNow"><span id="endTimeOut"></span></b>
+              <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <p class="end-day" id="endDayOut"></p>
+          </div>
+          <div class="preset-menu" id="presetMenu" hidden>
+            <div id="presetList"></div>
+            <div class="pm-day pm-custom">
+              <p class="pm-h"><span class="pm-word">Or set your own time</span></p>
+              <div class="seg days" id="endDay" role="group" aria-label="Bake day">
+                <button type="button" data-v="0">Today</button>
+                <button type="button" data-v="1">Tomorrow</button>
+                <button type="button" data-v="2">Day after</button>
+              </div>
+              <input class="time" id="endTime" type="time" aria-label="Bake time">
             </div>
-            <input class="time" id="endTime" type="time" aria-labelledby="end-l">
           </div>
         </div>
         <p class="flag" id="autoFlag" hidden></p>
-        <div>
-          <span class="lbl" id="sched-l">Suggested</span>
-          <div class="seg" id="hours" role="group" aria-labelledby="sched-l">
-            <button type="button" data-v="8">8 h<small>Same day</small></button>
-            <button type="button" data-v="24">24 h<small>Most reliable</small></button>
-            <button type="button" data-v="36">36 h<small>In between</small></button>
-            <button type="button" data-v="48">48 h<small>Most flavour</small></button>
+        <div class="ftl" id="ftl" aria-hidden="true"></div>
+        <div class="flour-wrap">
+          <div class="fl-head">
+            <span class="lbl flush"><svg class="ico i-wheat" aria-hidden="true"><use href="#i-wheat"/></svg>Flour strength</span>
+            <p class="fl-sub" id="wRange"></p>
           </div>
-          <p class="hint" id="schedHint"></p>
+          <div class="fl-steps" id="flSingle">
+            <button type="button" class="fl-btn" id="blendBtn">Blend…</button>
+            <div class="stepper mini main" role="group" aria-label="Flour strength">
+              <button type="button" data-wstep="0:-10" aria-label="Flour W minus 10">−</button><output id="w0"></output><button type="button" data-wstep="0:10" aria-label="Flour W plus 10">+</button>
+            </div>
+          </div>
         </div>
-      </div>
+        <div class="blend" id="flBlend">
+          <div class="blend-grid">
+            <div class="stepper mini" role="group" aria-label="First flour strength">
+              <button type="button" data-wstep="0:-10" aria-label="First flour W minus 10">−</button><output id="w0b"></output><button type="button" data-wstep="0:10" aria-label="First flour W plus 10">+</button>
+            </div>
+            <span class="op" aria-hidden="true">+</span>
+            <div class="stepper mini" role="group" aria-label="Second flour strength">
+              <button type="button" data-wstep="1:-10" aria-label="Second flour W minus 10">−</button><output id="w1"></output><button type="button" data-wstep="1:10" aria-label="Second flour W plus 10">+</button>
+            </div>
+            <span class="op" aria-hidden="true">=</span>
+            <output class="blend-result" id="blendW"></output>
+            <span class="blend-share" id="s0"></span>
+            <span></span>
+            <div class="stepper mini" role="group" aria-label="Share of the second flour">
+              <button type="button" data-sstep="-5" aria-label="Second flour 5% less">−</button><output id="s1"></output><button type="button" data-sstep="5" aria-label="Second flour 5% more">+</button>
+            </div>
+          </div>
+          <button type="button" class="link cancel-blend" id="unblendBtn">Cancel blending – use only one flour</button>
+        </div>
+        <div class="inline-row fold-row">
+          <span class="lbl flush" id="fold-l"><svg class="ico i-bubbles" aria-hidden="true"><use href="#i-bubbles"/></svg>Fold sets</span>
+          <div class="seg" id="fold" role="group" aria-labelledby="fold-l">
+            <button type="button" data-v="0">None</button>
+            <button type="button" data-v="2">2 sets</button>
+          </div>
+        </div>
+        </div>
+      </details>
 
-      <div class="cfg-group" aria-labelledby="mix-h">
-        <div class="head-row">
-          <span class="lbl flush" id="mix-h"><svg class="ico i-wheat" aria-hidden="true"><use href="#i-wheat"/></svg>Flour mix</span>
-          <output id="blendOut"></output>
-        </div>
-        <div class="flours" id="flours"></div>
-        <button type="button" class="link add" id="addFlour">Add a flour</button>
-      </div>
-
-      <div class="cfg-group" aria-label="Formula">
+      <details class="cfg-group more" id="secOther">
+        <summary><span class="more-t"><span id="salt-l"><svg class="ico i-salt" aria-hidden="true"><use href="#i-salt"/></svg>Salt</span><output id="saltOut"></output></span><ul class="more-list" id="moreSum"></ul></summary>
+        <div class="more-body">
         <div>
-          <div class="head-row"><span class="lbl" id="hyd-l"><svg class="ico i-water" aria-hidden="true"><use href="#i-water"/></svg>Hydration</span><output id="hydOut"></output></div>
-          <div class="seg" id="hyd" role="group" aria-labelledby="hyd-l"></div>
-          <p class="hint" id="hydWhy"></p>
-        </div>
-        <div>
-          <div class="head-row"><span class="lbl" id="salt-l"><svg class="ico i-salt" aria-hidden="true"><use href="#i-salt"/></svg>Salt</span><output id="saltOut"></output></div>
           <div class="seg" id="salt" role="group" aria-labelledby="salt-l">
             <button type="button" data-v="2.5">2.5%<small>Mild</small></button>
             <button type="button" data-v="2.7">2.7%<small>Medium</small></button>
@@ -281,13 +419,16 @@ tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
             <button type="button" data-v="3">2–3°<small>Cold: +30% yeast</small></button>
             <button type="button" data-v="4">4–5°<small>Target</small></button>
           </div>
+          <p class="mini-warn" id="fridgeWarn" hidden>At 2–3 °C the dough ferments much more slowly; the yeast is already raised for it. Use 4–5 °C if you can, and if the dough comes out barely grown, proof it at 25–27 °C.</p>
           <p class="hint">Measure it with a thermometer in a glass of water. The dial isn't a temperature.</p>
         </div>
         <div>
-          <span class="lbl" id="yeast-l"><svg class="ico i-yeast" aria-hidden="true"><use href="#i-yeast"/></svg>Yeast</span>
-          <div class="seg" id="yeast" role="group" aria-labelledby="yeast-l">
-            <button type="button" data-v="fresh">Fresh</button>
-            <button type="button" data-v="dry">Instant dry</button>
+          <div class="inline-row yeast-row">
+            <div><span class="lbl flush" id="yeast-l"><svg class="ico i-yeast" aria-hidden="true"><use href="#i-yeast"/></svg>Yeast</span><p class="fl-sub" id="yeastG"></p></div>
+            <div class="seg" id="yeast" role="group" aria-labelledby="yeast-l">
+              <button type="button" data-v="fresh">Fresh</button>
+              <button type="button" data-v="dry">Instant dry</button>
+            </div>
           </div>
           <details class="how">
             <summary>How to test your yeast</summary>
@@ -306,9 +447,6 @@ tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
             </div>
           </details>
         </div>
-      </div>
-
-      <div class="cfg-group" aria-label="Other">
         <div id="weighBox">
           <span class="lbl" id="weigh-l"><svg class="ico i-scale" aria-hidden="true"><use href="#i-scale"/></svg>How you weigh the yeast</span>
           <div class="seg" id="weigh" role="group" aria-labelledby="weigh-l">
@@ -316,42 +454,28 @@ tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
             <button type="button" data-v="solution">Solution<small>No fine scale</small></button>
           </div>
         </div>
-        <div>
-          <span class="lbl" id="fold-l"><svg class="ico i-bubbles" aria-hidden="true"><use href="#i-bubbles"/></svg>Fold sets</span>
-          <div class="seg" id="fold" role="group" aria-labelledby="fold-l">
-            <button type="button" data-v="0">None<small>Less work</small></button>
-            <button type="button" data-v="2">2 sets<small>Recommended</small></button>
-            <button type="button" data-v="3">3 sets<small>More strength</small></button>
-          </div>
         </div>
-      </div>
+      </details>
 
-      <div class="cfg-foot" id="cfgFoot">
-        <button type="button" class="collapse" data-collapse>
-          <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 10l5-5 5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Collapse
-        </button>
-        <button type="button" class="danger" id="reset">Reset</button>
-      </div>
-      <div class="cfg-foot ask" id="resetAsk" hidden>
-        <span>Reset all choices?</span>
-        <button type="button" class="collapse" id="resetNo">Cancel</button>
-        <button type="button" class="danger" id="resetYes">Yes, reset</button>
-      </div>
-    </div>
-  </section>
+      <details class="cfg-group more" id="secCheck">
+        <summary><span class="more-t">Dough check</span><ul class="more-list" id="sumCheck"></ul></summary>
+        <div class="more-body">
+          <div class="checks" id="checkBody" aria-live="polite"></div>
+        </div>
+      </details>
 
-  <section class="check" id="check" aria-labelledby="check-h">
-    <div class="head-row">
-      <h2 id="check-h">Dough check</h2>
-      <span class="check-pill" id="checkStatus"></span>
     </div>
-    <div class="check-body" id="checkBody"></div>
-    <p class="wip">Work in progress: basic rules comparing time, flour strength and hydration. The dough itself has the last word.</p>
   </section>
 
   <section class="plan" aria-labelledby="ing-h">
-    <h2 id="ing-h">Ingredients</h2>
+    <div class="inline-row balls-row">
+      <h2 id="ing-h">Ingredients</h2>
+      <div class="stepper" role="group" aria-label="Dough balls">
+        <button type="button" data-step="-1" aria-label="One ball fewer">−</button>
+        <output id="balls"></output>
+        <button type="button" data-step="1" aria-label="One ball more">+</button>
+      </div>
+    </div>
     <div class="slip" aria-live="polite">
       <div class="scroll"><table id="table"></table></div>
       <p class="slip-note" id="slipNote"></p>
@@ -392,8 +516,7 @@ const autoHours = s => (s.endDay * 1440 + toMin(s.endTime) - toMin(s.startTime))
 const TEMP_FACTOR = { 19: 1.2, 21: 1.07, 23: 0.93, 25: 0.8, 27: 0.7 };
 const MAX_PER_BOWL = 6;
 const defaultFlours = () => [
-  { name: "Caputo Pizzeria", w: 270 },
-  { name: "K Plus Manitoba", w: 380, share: 25 },
+  { w: 300 },
 ];
 const DEFAULTS = { style: "canotto", balls: 12, ball: 270, hyd: 66, salt: 2.8, temp: 21, fridge: 4, yeast: "fresh", weigh: "scale", fold: 2,
   startTime: "17:00", endDay: 2, endTime: "17:00" };
@@ -442,67 +565,77 @@ const BLEND_STEPS = [15, 25, 30];
 function checkDough({ hours: h, blend, hyd, strongShare, style, fold, temp, fridge }) {
   const [minW, maxW] = interp(tolerant(h), W_WINDOW).map(Math.round);
   const hours = Math.round(h), cold = h >= 10;
+  const aH = /^(8|11|18|8\d)$/.test(String(hours)) ? "an" : "a";
   const out = [];
-  const add = (level, title, why, fix) => out.push({ level, title, why, fix });
+  const add = (level, area, title, why, fix) => out.push({ level, area, title, why, fix });
   /* Strong flour needed to reach W target, staying within the 30% limit. Null if it can't. */
   const strongFix = target => {
     const extra = BLEND_STEPS.find(x => blend + (380 - blend) * x / 100 >= target && strongShare + x <= 30);
     if (!extra) return null;
-    return strongShare ? `raise your strong flour to about ${strongShare + extra}%` : `use about ${extra}% of a W 380 flour`;
+    return strongShare ? `raise the stronger flour's share to about ${strongShare + extra}%`
+      : `tap Blend… next to Flour strength and add about ${extra}% of a strong W 380 flour`;
   };
 
-  if (h > 51 && blend < 340) add("caution", "Past 51 h needs very strong flour",
-    "Flour around W 340–400 is what suits 48–72 h, and the yeast amounts here stop at 48 h.", "Shorten to 48 h or less.");
-  if (h > 8.5 && h < 22) add("caution", "Between the main schedules",
-    "This time sits between the same-day and 24 h recipes, so the yeast and timing are estimates.", "Use 8 h or 24 h for the most reliable result.");
+  if (h > 51 && blend < 340) add("caution", "Fermentation time", "Very long ferment for this flour",
+    `You've set ${hours} h. Ferments past about 48 h need very strong flour (W 340–400) to hold together, and yours is W ${blend}. The yeast amount also stops adjusting after 48 h, so it may be off.`,
+    "Move the bake time earlier so the ferment is 48 h or less, or raise Flour strength to W 340 or more.");
+  if (h > 8.5 && h < 22) add("caution", "Fermentation time", "Untested fermentation length",
+    `${hours} h falls between the tested same-day (8 h) and 24 h schedules. The dough will still work, but the yeast amount and step times are estimated.`,
+    "For the most predictable result, tap Use preset… next to End and pick 8 h or 24 h.");
 
   const gap = minW - blend;
   const longWetWeak = h >= 42 && h <= 51 && hyd >= 68 && blend < 280;
   if (longWetWeak) {
     const fix = strongFix(290);
-    add("risk", "Long, wet and too weak",
-      `The 48 h recipes all use W 280 or stronger, and ${hours} h at ${hyd}% on W ${blend} can turn slack and unworkable.`,
-      fix ? `To fix it, ${fix} or shorten to 24 h.` : "Use a stronger main flour or shorten to 24 h.");
+    add("risk", "Flour, hydration and time", "Risk of a slack, unworkable dough",
+      `This combines a long ${hours} h ferment, a wet ${hyd}% dough and a fairly weak W ${blend} flour. Every 48 h recipe in the sources uses W 280 or stronger. This dough can turn soft and sticky and tear when you open it.`,
+      `To fix it, ${fix ? fix + ", " : "raise Flour strength to about W 290, "}lower Hydration to 66%, or shorten the ferment to 24 h.`);
   } else if (gap > 0 && h <= 51) {
     const fits = W_WINDOW.filter(r => r[1] <= blend && r[0] < h).pop();
     const fix = strongFix(minW);
     const options = [];
     if (fix) options.push(fix);
-    if (fits) options.push(`shorten to ${fits[0]} h`);
-    const later = cold ? " If you keep this flour, ball it later rather than earlier." : "";
-    add(gap >= 30 ? "risk" : "caution", `Flour is on the weak side for ${hours} h`,
-      `W ${blend} is below the roughly W ${minW} this ferment wants, so the dough can turn slack and tear.`,
-      (options.length ? `To fix it, ${options.join(" or ")}.` : `Use a stronger main flour, around W ${minW}.`) + later);
+    if (fits) options.push(`shorten the ferment to ${fits[0]} h`);
+    const later = cold ? " If you keep this flour, ball the dough later rather than earlier." : "";
+    add(gap >= 30 ? "risk" : "caution", "Flour strength", `Flour too weak for ${aH} ${hours} h ferment`,
+      `${aH === "an" ? "An" : "A"} ${hours} h ferment needs flour of about W ${minW} or more (W is the flour's strength, printed on many bags). Yours is W ${blend}, so the gluten may wear out before baking: the dough turns slack and sticky and tears when you stretch it.`,
+      (options.length ? `To fix it, ${options.join(" or ")}.` : `Raise Flour strength to about W ${minW}.`) + later);
   }
-  if (blend > maxW) add("caution", "Flour is stronger than this ferment needs",
-    `W ${blend} needs time to relax, so after ${hours} h it may stay tight and snap back.`,
-    `Bring the blend down toward W ${maxW}${h < 48 ? " or ferment longer" : ""}.`);
+  if (blend > maxW) add("caution", "Flour strength", `Flour stronger than ${aH} ${hours} h ferment needs`,
+    `W ${blend} is strong flour. It needs a long ferment to relax, and after only ${hours} h the dough may stay elastic: hard to stretch, shrinking back, with a denser rim.`,
+    `Lower Flour strength toward W ${maxW}${h < 48 ? ", or choose a longer ferment" : ""}.`);
 
-  if (hyd > 68) add("caution", "Wet dough by hand",
-    `${hyd}% works, but hand mixing gets harder above about 68% and the rim can char before the crumb sets.`,
-    "Use slap and fold and plenty of semola, and keep the stone near 430–450 °C. Or drop to 68%.");
-  if (fold === 0 && hyd >= 68) add("caution", "Wet dough without folds",
-    `At ${hyd}%, folds build strength that kneading alone may not give.`, "Add 2 fold sets, or ball the dough extra tight.");
-  if (hyd <= 64 && blend >= 340) add("caution", "Dough may be stiff",
-    `Stronger flour absorbs more water, so ${hyd}% can feel tight and open poorly.`, "Try 66–68%.");
+  if (hyd > 68) add("caution", "Hydration", `${hyd}% is a wet dough to mix by hand`,
+    "It will work, but above about 68% the dough is very sticky to knead by hand and harder to shape, and the rim can char before the inside is cooked.",
+    "Knead with slap and fold, dust with plenty of semola and keep the stone near 430–450 °C. Or choose 68% for easier handling.");
+  if (fold === 0 && hyd >= 68) add("caution", "Fold sets", "Wet dough with no fold sets",
+    `At ${hyd}% the dough is soft, and folds give it the strength to hold its shape. Kneading alone may leave the balls spreading flat.`,
+    "Set Fold sets to 2 sets, or shape the balls extra tight.");
+  if (hyd <= 64 && blend >= 340) add("caution", "Hydration and flour", "Dough may be stiff",
+    `Strong flour (W ${blend}) soaks up more water, so at only ${hyd}% the dough can feel tight, resist stretching and bake into a denser rim.`,
+    "Raise Hydration to 66–68%, or lower Flour strength.");
 
-  if (h < 10 && strongShare > 15) add("caution", "Too much strong flour for a same-day dough",
-    `${strongShare}% of the mix is W 350 or above. In a few hours it stays tight.`, "Keep it at 15% or less.");
-  else if (strongShare > 30) add("caution", "A lot of very strong flour",
-    `${strongShare}% of the mix is W 350 or above. Past about 30% the dough gets tight and springy.`, "Keep strong flour at 30% or less.");
+  if (h < 10 && strongShare > 15) add("caution", "Flour strength", "Too much strong flour for a short ferment",
+    `${strongShare}% of your flour is very strong (W 350 or more). It needs many hours to relax, so in a same-day dough it stays tight and springs back.`,
+    "Lower the second flour's share to 15% or less.");
+  else if (strongShare > 30) add("caution", "Flour strength", "Too much very strong flour",
+    `${strongShare}% of your flour is very strong (W 350 or more). Above about 30% the dough turns tight and springy and is hard to open into a big rim.`,
+    "Lower the second flour's share to 30% or less.");
 
-  if (!cold && temp >= 25) add("caution", "Warm kitchen for a same-day dough",
-    `Every hour counts at ${temp} °C, so this dough can rise ahead of the timeline.`, "Use cool water, check the balls early and bake when they've doubled.");
-  if (cold && temp >= 27) add("caution", "Final rise may run fast",
-    `At ${temp} °C the balls can be ready well before the timeline says.`, "Check them early, and bake when they've doubled.");
-  if (cold && fridge === 3) add("caution", "Cold fridge",
-    "At 2–3 °C the dough ferments much more slowly than planned. The yeast is already raised to allow for it.", "Set the fridge to 4–5 °C if you can. If the dough comes out barely grown, proof at 25–27 °C.");
+  if (!cold && temp >= 25) add("caution", "Kitchen temperature", "Warm kitchen: the dough may rise too fast",
+    `At ${temp} °C a same-day dough ferments quickly. The yeast is already reduced for it, but the dough can still be ready before the times in the timeline, and over-risen dough tears and tastes sour.`,
+    "Mix with cool water, check the dough balls early and bake as soon as they've doubled.");
+  if (cold && temp >= 27) add("caution", "Kitchen temperature", "Warm kitchen: the final rise may run fast",
+    `After the fridge, the dough balls rise at room temperature. At ${temp} °C they can be ready well before the timeline says.`,
+    "Check them about an hour early and bake once they've doubled.");
 
   if (style === "verace") {
-    if (h < 8 || h > 24) add("caution", "Outside the AVPN time",
-      `The AVPN rules allow 8–24 h in total, so ${hours} h isn't strictly verace.`, "Choose 8 h or 24 h to stay inside the rules.");
-    if (blend < 250 || blend > 320) add("caution", "Outside the AVPN flour range",
-      `The AVPN reading is about W 250–320, and this blend is W ${blend}.`, "Adjust the blend toward that range.");
+    if (h < 8 || h > 24) add("caution", "Pizza style and time", `${h > 24 ? "Longer" : "Shorter"} than the official Verace rules allow`,
+      `This is only about the AVPN's official rules for verace pizza, which allow 8–24 h in total. Yours is ${hours} h. The dough itself will be fine.`,
+      "To follow the rules exactly, tap Use preset… next to End and pick 8 h or 24 h. Otherwise you can ignore this.");
+    if (blend < 250 || blend > 320) add("caution", "Pizza style and flour", "Flour outside the official Verace rules",
+      `The AVPN rules for verace pizza use flour of about W 250–320, and yours is W ${blend}. This is about following the official rules, not a problem with the dough by itself.`,
+      "To follow the rules, set Flour strength between W 250 and W 320.");
   }
 
   const rank = { risk: 2, caution: 1 };
@@ -511,35 +644,24 @@ function checkDough({ hours: h, blend, hyd, strongShare, style, fold, temp, frid
 }
 /* CALC-END */
 
-/* W values are typical figures. Remaining slots are placeholders until researched. */
-const FLOUR_LIST = [
-  { name: "Caputo Pizzeria", w: 270 },
-  { name: "Caputo Nuvola", w: 270 },
-  { name: "Caputo Nuvola Super", w: 320 },
-  { name: "Caputo Cuoco", w: 320 },
-  { name: "Caputo Manitoba Oro", w: 370 },
-  { name: "K Plus Manitoba", w: 380 },
-  { name: "Le 5 Stagioni Pizza Napoletana", w: 270 },
-  { name: "Le 5 Stagioni Superiore", w: 300 },
-  { name: "Polselli Classica", w: 300 },
-  null, null, null, null, null, null, null, null, null, null, null,
-];
 const STORE = "canotto-calc-v1";
 const $ = id => document.getElementById(id);
 const esc = t => t.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const MAX_FLOURS = 4, SHARE_CHOICES = [10, 15, 20, 25, 30];
+const MAX_FLOURS = 2;
 const STYLES = {
   canotto: {
-    hint: "Opens to 28–30 cm with a tall, airy rim. Canotto dough runs from 65% hydration up.",
+    hint: "The contemporary Neapolitan pizza, named after the \"dinghy\" its tall, puffy, airy rim resembles, around a soft centre of about 28–30 cm. That rim needs a wetter dough, so hydration starts around 64–66%, and a slightly heavier 260–290 g ball, so there's enough dough to inflate it.",
+    pic: "images/PizzaCanotto.webp", alt: "Canotto pizza with a tall, puffy rim",
     hyd: [[64, "Easy"], [65, "Sweet spot"], [66, "Balanced"], [68, "Sticky"], [70, "Wet"]],
     ball: [[250, "Smaller"], [260, "Canotto"], [270, "Tall rim"], [290, "Large"]],
-    defHyd: 66, defBall: 270, stone: "430–460 °C",
+    defHyd: 66, defBall: 270, defFlours: () => [{ w: 300 }], stone: "430–460 °C",
   },
   verace: {
-    hint: "The AVPN and STG tradition: 180–250 g balls, up to 35 cm, with a 1–2 cm rim.",
+    hint: "Classic Naples pizza by the AVPN rules: thin, soft centre and a low 1–2 cm rim, up to 35 cm. Stretched extra wide, it's the ruota di carro (\"cartwheel\"). Lower 58–65% hydration keeps it easy to launch, and the modest rim needs only a 180–250 g ball.",
+    pic: "images/PizzaVerace.webp", alt: "Verace Neapolitan pizza with a low, classic rim",
     hyd: [[58, "AVPN"], [60, "Classic"], [62, "Easy"], [65, "Airier"]],
     ball: [[180, "Small"], [200, "Light"], [230, "Medium"], [250, "Full"]],
-    defHyd: 60, defBall: 250, stone: "430–480 °C",
+    defHyd: 60, defBall: 250, defFlours: () => [{ w: 270 }], stone: "430–480 °C",
   },
 };
 const HYD_WHY = {
@@ -548,7 +670,7 @@ const HYD_WHY = {
   62: "Still easy to handle, a little more open than 60%.",
   64: "The fallback if 66% felt too sticky. Two points is a bigger change in feel than it sounds.",
   65: "The sweet spot: airy yet manageable.",
-  66: "The canotto entry point with a 25% Manitoba blend.",
+  66: "The canotto entry point. Works best with a slightly stronger flour, around W 300.",
   68: "Slightly sticky and the top of the practical hand-mixed range. Use semola.",
   70: "Wet. Handle gently and watch for char.",
 };
@@ -570,14 +692,47 @@ function setEnd(hours) {
   state.endDay = Math.min(2, Math.floor(end / 1440));
   state.endTime = minText(end % 1440);
 }
+const PRESETS = [[24, "Most reliable"], [36, "In between"], [48, "Most flavour"]];
+const MEALS = [["Lunch", "sun", ["11:00", "12:00", "13:00", "14:00"]], ["Midday", "sunset", ["15:00", "16:00", "17:00", "18:00"]], ["Dinner", "moon", ["19:00", "20:00", "21:00", "22:00"]]];
+const DAY_WORD = ["Today", "Tomorrow", "Day after"];
+function renderPresets(h) {
+  const endAt = hoursIn(state, autoHours(state), true);
+  $("endDayOut").textContent = `${DAY_WORD[state.endDay]} · ${endAt.toLocaleDateString("en-GB", { weekday: "short" })}`;
+  $("endTimeOut").textContent = state.endTime;
+  const startMin = toMin(state.startTime), start = startAt(state);
+  const fixed = PRESETS.map(([p]) =>
+    `<button type="button" class="pm-chip" data-preset="${p}" aria-pressed="${p === h}"><b>${p} h</b></button>`).join("");
+  const dayBlock = d => {
+    const date = new Date(start); date.setDate(date.getDate() + d);
+    const rows = MEALS.map(([name, icon, times]) => `<div class="pm-row ${name.toLowerCase()}"><span class="pm-l">${ico(icon)}${name}</span><div class="pm-chips">${times.map(v => {
+      const hrs = Math.round((d * 1440 + toMin(v) - startMin) / 6) / 10;
+      return `<button type="button" class="pm-chip" data-bake="${d}:${v}" aria-pressed="${state.endDay === d && state.endTime === v}" ${hrs < 4 ? "disabled" : ""}><b>${v}</b><small>${hrs < 4 ? "too soon" : `${Number.isInteger(hrs) ? "" : "~"}${Math.round(hrs)} h`}</small></button>`;
+    }).join("")}</div></div>`).join("");
+    return `<div class="pm-day"><p class="pm-h"><span class="pm-word">${DAY_WORD[d]}</span><span class="pm-date">${dateText(date)}</span></p>${rows}</div>`;
+  };
+  $("presetList").innerHTML = `${dayBlock(1)}${dayBlock(2)}<div class="pm-day pm-fixed"><p class="pm-h"><span class="pm-word">Or pick a fixed duration</span></p><div class="pm-chips">${fixed}</div></div>`;
+}
+function toggleTip(open) {
+  $("styleHint").hidden = !open;
+  $("styleHelp").setAttribute("aria-expanded", open);
+}
+function togglePresets(open) {
+  $("presetMenu").hidden = !open;
+  $("presetBtn").setAttribute("aria-expanded", open);
+}
 /* Older saved plans stored a fixed fermentation time. */
 if (typeof state.hours === "number") setEnd(state.hours);
 delete state.hours;
-if (typeof state.cfgOpen !== "boolean") state.cfgOpen = false;
+delete state.cfgOpen;
+if (!state.open || typeof state.open !== "object") state.open = {};
 if (!/^\d{4}-\d{2}-\d{2}$/.test(state.startDate || "")) state.startDate = isoDay(new Date());
-if (![0, 2, 3].includes(state.fold)) state.fold = 2;
+if (![0, 2].includes(state.fold)) state.fold = 2;
 if (!Array.isArray(state.flours) || !state.flours.length) state.flours = defaultFlours();
-let openFlour = null;
+if (state.flours.length > MAX_FLOURS) state.flours = state.flours.slice(0, MAX_FLOURS);
+state.flours = state.flours.map((f, i) => {
+  const w = Math.min(420, Math.max(180, Math.round((+f.w || 270) / 10) * 10));
+  return i ? { w, share: Math.min(50, Math.max(5, Math.round((+f.share || 25) / 5) * 5)) } : { w };
+});
 
 const startAt = s => new Date(`${s.startDate}T${s.startTime}:00`);
 function hoursIn(s, hours, exact) {
@@ -602,14 +757,6 @@ function nextQuarter(now) {
   return d;
 }
 
-function planHint(h) {
-  const c = schedule(h);
-  const rise = `Final rise ${c.rise} h at 22–24 °C.`;
-  return c.cold
-    ? `2 h warm, then fridge until ${c.ballAt} h. ${rise}`
-    : `Room temperature only: bulk until ${c.ballAt} h, then ball. ${rise}`;
-}
-
 const ico = k => `<svg class="ico i-${k}" aria-hidden="true"><use href="#i-${k}"/></svg>`;
 const pill = (label, amount, icon) => `<span class="pill">${icon ? ico(icon) : ""}${label}${amount ? `<b>${amount}</b>` : ""}</span>`;
 
@@ -621,7 +768,7 @@ function timelineEvents(s, h, r) {
   const yeastAmt = r.bowls.map(b => fmtY(b.yeast, dry)).join(" / ") + " g";
   const hot = s.temp >= 25;
   const waterTemp = !c.cold ? (hot ? "20–22 °C" : "about 25 °C") : hot ? "18–20 °C" : "20–22 °C";
-  const flourPills = s.flours.map((f, i) => pill(esc(flourName(f, i)), r.bowls.map(b => b.parts[i]).join(" / ") + " g", "flour"));
+  const flourPills = s.flours.map((f, i) => pill(esc(flourName(f, i, s.flours)), r.bowls.map(b => b.parts[i]).join(" / ") + " g", "flour"));
   const ballPills = bowl => [pill("Dough balls", `${bowl.balls} × ${s.ball} g`, "pizza"), pill(s.hyd >= 65 ? "Thin film of oil" : "Bench flour")];
   const mixPills = [...flourPills];
   if (dry && !solutionOn) mixPills.push(pill("Instant yeast", yeastAmt, "yeast"));
@@ -691,8 +838,7 @@ setInterval(markNow, 30000);
 
 const fmtY = (g, dry) => g < 3 && dry ? g.toFixed(2) : g < 10 ? g.toFixed(1) : String(Math.round(g));
 const fmtS = g => Number.isInteger(g) ? String(g) : g.toFixed(1);
-const flourName = (f, i) => f.name.trim() || `Flour ${i + 1}`;
-const strength = w => w < 250 ? "Soft" : w <= 320 ? "Medium" : "Strong";
+const flourName = (f, i, all) => all.length > 1 ? `Flour W ${f.w}` : "Flour";
 
 function row(label, vals, cls) {
   return `<tr class="${cls || ""}"><td>${label}</td>${vals.map(v => `<td>${v}</td>`).join("")}</tr>`;
@@ -703,107 +849,128 @@ function renderStyle() {
   $("ball").innerHTML = segButtons(st.ball, "");
   $("hyd").innerHTML = segButtons(st.hyd, "%");
   $("styleHint").textContent = st.hint;
+  $("stylePic").src = $("sumPic").src = st.pic;
+  $("stylePic").alt = st.alt;
 }
 
-/* Rebuilt only when the list changes, so dragging a slider or typing a name keeps focus. */
-function renderFlours() {
-  const p = shares(state.flours);
-  $("flours").innerHTML = state.flours.map((f, i) => {
-    const open = openFlour === i;
-    const otherShare = 100 - p[0] - (i ? f.share : 0);
-    const shareSeg = i === 0
-      ? `<p class="hint">This is the main flour. It takes the share the other flours leave.</p>`
-      : `<div><span class="lbl">Share of the flour</span><div class="seg">${SHARE_CHOICES.map(v =>
-          `<button type="button" data-share="${i}:${v}" aria-pressed="${f.share === v}" ${otherShare + v >= 100 ? "disabled" : ""}>${v}%</button>`).join("")}</div></div>`;
-    return `<div class="flour">
-      <button type="button" class="flour-head" data-open="${i}" aria-expanded="${open}">
-        <span id="fname${i}"></span><span class="meta" id="fmeta${i}"></span>
-      </button>
-      ${open ? `<div class="flour-body">
-        <div><label class="lbl" for="pick${i}">Choose a flour</label>
-          <select class="select" id="pick${i}" data-pick="${i}">
-            <option value="">Custom flour</option>
-            ${FLOUR_LIST.filter(Boolean).map(o => `<option value="${esc(o.name)}" ${o.name === f.name ? "selected" : ""}>${esc(o.name)} (W ${o.w})</option>`).join("")}
-            <option disabled>${FLOUR_LIST.filter(o => !o).length} more flours to be added</option>
-          </select>
-          <p class="hint">W values are typical figures. Check your bag.</p></div>
-        <div><label class="lbl" for="name${i}">Name (optional)</label>
-          <input class="text" id="name${i}" data-name="${i}" type="text" autocomplete="off" placeholder="Flour ${i + 1}" value="${esc(f.name)}"></div>
-        <div><div class="head-row"><label class="lbl" for="w${i}">Strength</label><output id="wOut${i}"></output></div>
-          <input id="w${i}" data-w="${i}" type="range" min="180" max="420" step="10" value="${f.w}">
-          <div class="scale"><span>W 180</span><span>W 420</span></div></div>
-        ${shareSeg}
-        ${i ? `<button type="button" class="link remove" data-remove="${i}">Remove this flour</button>` : ""}
-      </div>` : ""}
-    </div>`;
-  }).join("");
-  $("addFlour").disabled = state.flours.length >= MAX_FLOURS || p[0] <= 10;
-}
-
-const CHECK_LABEL = { good: "Looks good", caution: "Worth a look", risk: "Risky" };
 function renderCheck(h, blend, hyd, strongShare) {
-  const box = $("check");
+  const sec = $("secCheck");
   if (h < 4) {
-    box.dataset.level = "caution";
-    $("checkStatus").textContent = "Waiting";
-    $("checkBody").innerHTML = `<p class="hint">Pick times at least 4 h apart to check this dough.</p>`;
+    sec.dataset.level = "caution";
+    $("checkBody").innerHTML = `<div class="finding"><p>Pick times at least 4 h apart to check this dough.</p></div>`;
+    $("sumCheck").innerHTML = `<li class="chk">${ico("alert")}Pick times at least 4 h apart</li>`;
     return;
   }
   const c = checkDough({ hours: h, blend, hyd, strongShare, style: state.style, fold: state.fold, temp: state.temp, fridge: state.fridge });
-  box.dataset.level = c.level;
-  $("checkStatus").textContent = CHECK_LABEL[c.level];
-  const range = `<p class="check-range">For ${h} h: about W ${c.minW}–${c.maxW}. ${state.style === "verace" ? "Verace hydration is about 58–65%." : "By hand, 65–68% is the practical hydration range."}</p>`;
-  $("checkBody").innerHTML = range + (c.findings.length
-    ? c.findings.map(f => `<div class="finding" data-level="${f.level}"><b>${f.title}</b><p>${f.why}</p><p class="fix">${f.fix}</p></div>`).join("")
-    : `<p>${h} h, W ${blend} and ${hyd}% suit each other.</p>`);
+  sec.dataset.level = c.level;
+  if (!c.findings.length) {
+    const ok = `${h} h, W ${blend} and ${hyd}% suit each other.`;
+    $("checkBody").innerHTML = `<p class="finding ok">${ok}</p>`;
+    $("sumCheck").innerHTML = `<li class="chk ok">✓ ${ok}</li>`;
+    return;
+  }
+  $("checkBody").innerHTML = c.findings.map(f => `<div class="finding" data-level="${f.level}"><small class="f-area">${f.level === "risk" ? "Risky" : "Worth a look"} · ${f.area}</small><b>${f.title}</b><p>${f.why}</p><p class="fix">${f.fix}</p></div>`).join("");
+  $("sumCheck").innerHTML = c.findings.map(f => `<li class="chk" data-level="${f.level}">${ico("alert")}${f.title}</li>`).join("");
+}
+
+/* A small picture of the plan: phases as coloured bands, nights shaded, days marked. */
+function renderFtl(s, H, sch) {
+  const el = $("ftl");
+  el.hidden = $("ftlMini").hidden = !(H >= 4);
+  if (el.hidden) return;
+  const clamp = x => Math.max(0, Math.min(H, x));
+  const pct = x => `${(clamp(x) / H * 100).toFixed(2)}%`;
+  const seg = (a, b, cls, label) => b <= a ? "" :
+    `<span class="ftl-seg ${cls}" style="left:${pct(a)};width:${pct(b - a)}">${(b - a) / H > 0.16 ? label : ""}</span>`;
+  const bands = sch.cold
+    ? seg(0, 1, "mix", "") + seg(1, 2, "warm", "") + seg(2, sch.ballAt, "cold", "Fridge") + seg(sch.ballAt, H, "rise", "Rise")
+    : seg(0, 1, "mix", "") + seg(1, sch.ballAt, "warm", "Bulk") + seg(sch.ballAt, H, "rise", "Rise");
+  const start = startAt(s), h0 = start.getHours() + start.getMinutes() / 60;
+  let nights = "", mids = "", days = `<span class="ftl-day" style="left:0;border:0;padding:0">${start.toLocaleDateString("en-GB", { weekday: "short" })}</span>`;
+  for (let k = -1; k * 24 < H + 24; k++) {
+    const a = k * 24 + 21 - h0, b = a + 10, w = clamp(b) - clamp(a);
+    if (w > 0) nights += `<span class="ftl-night" style="left:${pct(a)};width:${pct(w)}">${w / H > 0.06 ? "☾" : ""}</span>`;
+    const m = (k + 1) * 24 - h0;
+    if (m > 0 && m < H) {
+      mids += `<span class="ftl-mid" style="left:${pct(m)}"></span>`;
+      const day = new Date(start.getTime() + m * 3600e3);
+      if (m / H < 0.88) days += `<span class="ftl-day" style="left:${pct(m)}">${day.toLocaleDateString("en-GB", { weekday: "short" })}</span>`;
+    }
+  }
+  const at = x => hhmm(hoursIn(s, x));
+  const pts = sch.cold ? [[2, "in"], [sch.ballAt, "out"]] : [[sch.ballAt, "ball"]];
+  const ticks = pts.map(([x]) => `<span class="ftl-tick" style="left:${pct(x)}"></span>`).join("");
+  /* Fridge times share the start/end row; clamp() nudges them clear of those labels. */
+  const marks = pts.map(([x, k]) => `<span class="ftl-mark" style="left:clamp(64px, ${pct(x)}, calc(100% - 78px))">${k === "ball" ? "" : ico("fridge")}${at(x)}</span>`).join("");
+  $("ftlMini").innerHTML = bands + nights + mids;
+  el.innerHTML = `<div class="ftl-days">${days}</div><div class="ftl-track">${bands}${nights}${mids}${ticks}</div>` +
+    `<div class="ftl-times"><span>${s.startTime}</span>${marks}<span>${s.endTime}${ico("flame")}</span></div>`;
 }
 
 function render() {
   const s = state;
   const exactH = autoHours(s), h = Math.round(exactH * 10) / 10;
   const r = calculate({ ...s, hours: Math.max(h, 4) });
-  $("balls").textContent = s.balls;
+  $("balls").textContent = `${s.balls} ${s.balls === 1 ? "ball" : "balls"}`;
   $("startTime").value = s.startTime; $("endTime").value = s.endTime;
-  [["style", s.style], ["hours", h], ["ball", s.ball], ["temp", s.temp], ["fridge", s.fridge], ["yeast", s.yeast], ["weigh", s.weigh], ["fold", s.fold], ["hyd", s.hyd], ["salt", s.salt], ["endDay", s.endDay]].forEach(([id, v]) =>
-    $(id).querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === String(v))));
-  $("hydWhy").textContent = HYD_WHY[s.hyd];
+  [["style", s.style], ["ball", s.ball], ["temp", s.temp], ["fridge", s.fridge], ["yeast", s.yeast], ["weigh", s.weigh], ["fold", s.fold], ["hyd", s.hyd], ["salt", s.salt], ["endDay", s.endDay]].forEach(([id, v]) =>
+    $(id).querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === String(v))));  $("hydWhy").textContent = HYD_WHY[s.hyd];
   $("fridgeBox").hidden = !r.sch.cold;
   $("weighBox").hidden = s.yeast !== "dry";
+  $("fridgeWarn").hidden = s.fridge !== 3;
+  const fridgeTxt = s.fridge === 3 ? `2–3° ${ico("alert")}` : "4–5°";
+  const line = ([k, parts]) => `${ico(k)}` + parts.map(([l, v, x]) => `<b>${l}:</b> ${v}${x ? `<i>${x}</i>` : ""}`).join(", ");
+  const sub = id => { const b = $(id).querySelector('[aria-pressed="true"] small'); return b ? `, ${b.textContent}` : ""; };
+  const dryY = s.yeast === "dry";
+  $("moreSum").innerHTML = `<li class="one-line">${[
+    `${ico("salt")}<b>Salt:</b> ${s.salt.toFixed(1)}%`,
+    `${ico("yeast")}${dryY ? "Instant" : "Fresh"} ${fmtY(r.total.yeast, dryY)} g`,
+    `${ico("temp")}${s.temp}°`,
+    r.sch.cold && `${ico("fridge")}${fridgeTxt}`,
+  ].filter(Boolean).map(x => `<span>${x}</span>`).join("")}</li>`;
   const flag = h <= 0 ? "Bake time is before the start time. Pick a later bake time."
     : h < 4 ? `That is only ${h} h. The shortest schedule here is about 4 h.` : "";
   $("autoFlag").textContent = flag;
   $("autoFlag").hidden = !flag;
   $("hoursOut").textContent = h > 0 ? `${h} h` : "";
-  $("schedHint").textContent = h < 4 ? "" : planHint(h);
-  $("cfgOpen").hidden = s.cfgOpen;
-  $("cfgBody").hidden = !s.cfgOpen;
+  $("yeastG").textContent = `${fmtY(r.total.yeast, s.yeast === "dry")} g in total`;
+  renderPresets(h);
+  renderFtl(s, exactH, r.sch);
   const old = s.startDate !== isoDay(new Date());
   $("startHint").hidden = !old;
   if (old) $("startHint").textContent = `Saved start: ${dateText(startAt(s))}. Tap Now or change the time to start today.`;
 
   const p = shares(s.flours), blend = blendW(s.flours);
-  $("blendOut").textContent = `Blend about W ${blend}`;
-  s.flours.forEach((f, i) => {
-    $(`fname${i}`).textContent = flourName(f, i);
-    $(`fmeta${i}`).textContent = `W ${f.w} · ${p[i]}%`;
-    const w = $(`wOut${i}`);
-    if (w) w.textContent = `W ${f.w} · ${strength(f.w)}`;
-  });
+  const blendOn = s.flours.length > 1;
+  const [rMin, rMax] = interp(tolerant(Math.max(h, 4)), W_WINDOW).map(Math.round);
+  $("wRange").innerHTML = `Range: <b>W ${rMin}–${rMax}</b>`;
+  $("flSingle").hidden = blendOn;
+  $("flBlend").hidden = !blendOn;
+  document.querySelector(".flour-wrap").classList.toggle("blending", blendOn);
+  $("w0").textContent = $("w0b").textContent = `W ${s.flours[0].w}`;
+  if (blendOn) {
+    $("w1").textContent = `W ${s.flours[1].w}`;
+    $("s0").textContent = `${p[0]}%`;
+    $("s1").textContent = `${s.flours[1].share}%`;
+    $("blendW").textContent = `W ${blend}`;
+  }
 
   $("hydOut").textContent = `${r.total.water} g water`;
   $("saltOut").textContent = `${r.total.salt} g`;
 
   const dough = r.total.flour + r.total.water + r.total.salt;
-  $("slipNote").textContent = `All amounts in grams. ${s.balls} × ${s.ball} g, about ${dough} g of dough in ${r.bowlCount} ${r.bowlCount === 1 ? "bowl" : "bowls"}.`;
-  const sum = [
-    [`${s.balls} × ${s.ball} g`, "Dough balls", "pizza"],
-    [h > 0 ? `${h} h` : "Check", "Fermentation", "clock"],
-    [`W ${blend}`, "Flour", "wheat"],
-    [`${s.hyd}%`, "Hydration", "water"],
-    [s.style === "canotto" ? "Canotto" : "Verace", "Style", "bread"],
-    [h > 0 ? `${hoursIn(s, exactH, true).toLocaleDateString("en-GB", { weekday: "short" })} ${s.endTime}` : "Check", "Bake", "flame"],
-  ];
-  $("summary").innerHTML = sum.map(([v, l, k]) => `<span class="sum-item"><b>${v}</b><small>${ico(k)}${l}</small></span>`).join("");
+  $("slipNote").textContent = `In grams · ${s.balls} × ${s.ball} g ≈ ${dough} g dough`;
+  const bake = h > 0 ? `${hoursIn(s, exactH, true).toLocaleDateString("en-GB", { weekday: "short" })} ${s.endTime}` : "";
+  const list = items => items.filter(Boolean).map(l => `<li>${line(l)}</li>`).join("");
+  $("sumStyle").innerHTML = list([
+    ["bread", [["Pizza style", s.style === "canotto" ? "Canotto" : "Verace"]]],
+    ["water", [["Hydration", `${s.hyd}%`, sub("hyd").replace(",", "")]]],
+    ["scale", [["Grams per ball", `${s.ball} g`, sub("ball").replace(",", "")]]],
+  ]);
+  $("sumFerm").innerHTML = list([
+    ["clock", [["Fermentation", h > 0 ? `${Number.isInteger(h) ? "" : "~"}${Math.round(h)} h` : "check times", bake && `, bake ${bake}`]]],
+    ["wheat", [["Flour strength", `W ${blend}`, s.flours.length > 1 ? " blend" : ""], [`<span class="sep"></span>${ico("bubbles")}Folds`, s.fold ? `${s.fold} sets` : "none"]]],
+  ]);
 
   const dry = s.yeast === "dry", solutionOn = dry && s.weigh === "solution";
   const cols = r.bowlCount === 1 ? [r.total] : [...r.bowls, r.total];
@@ -811,14 +978,14 @@ function render() {
     [...r.bowls.map(b => `${b.count === 1 ? "1 bowl" : b.count + " bowls"} of ${b.balls}`), "Total"];
   const pick = (k, f) => cols.map(c => f ? f(c[k]) : c[k]);
   let html = `<thead><tr><th>Ingredient</th>${head.map(t => `<th>${t}</th>`).join("")}</tr></thead><tbody>`;
-  s.flours.forEach((f, i) => { html += row(`${ico("flour")}${esc(flourName(f, i))} <small>${p[i]}%</small>`, cols.map(c => c.parts[i])); });
-  html += row(`${ico("water")}Water <small>${s.hyd}%, includes everything below</small>`, pick("water"));
+  s.flours.forEach((f, i) => { html += row(`${ico("flour")}${esc(flourName(f, i, s.flours))} <small>${p[i]}%</small>`, cols.map(c => c.parts[i])); });
+  html += row(`${ico("water")}Water <small>${s.hyd}%</small>`, pick("water"));
   html += row("In the bowl", pick("plain"), "sub");
   if (solutionOn) html += row("Yeast solution", pick("solution", fmtS), "sub");
-  html += row("Held back, add with the salt", pick("held"), "sub last-sub");
+  html += row("Held back, add with salt", pick("held"), "sub last-sub");
   html += row(`${ico("salt")}Fine sea salt`, pick("salt"));
   const yPct = dry ? r.freshPct / 3 : r.freshPct;
-  html += row(`${ico("yeast")}${dry ? "Instant dry yeast" : "Fresh yeast"} <small>${yPct.toFixed(dry ? 3 : 2)}%</small>`, pick("yeast", y => fmtY(y, dry)));
+  html += row(`${ico("yeast")}${dry ? "Instant yeast" : "Fresh yeast"} <small>${yPct.toFixed(dry ? 3 : 2)}%</small>`, pick("yeast", y => fmtY(y, dry)));
   $("table").innerHTML = html + "</tbody>";
 
   const notes = [];
@@ -847,33 +1014,48 @@ function shiftStart(min) {
   if (state.startDate !== before) state.endDay = Math.max(0, Math.min(2, state.endDay + (min > 0 ? -1 : 1)));
 }
 
-function refreshFlours() { renderFlours(); render(); }
 
 document.addEventListener("click", e => {
   const t = e.target.closest("button");
+  if (!e.target.closest("#presetMenu, #presetBtn")) togglePresets(false);
+  if (!t || t.id !== "styleHelp") toggleTip(false);
   if (!t) return;
+  if (t.id === "styleHelp") return toggleTip($("styleHint").hidden);
+  if (t.id === "presetBtn") return togglePresets($("presetMenu").hidden);
+  if (t.dataset.preset) {
+    togglePresets(false);
+    setEnd(+t.dataset.preset);
+    return render();
+  }
+  if (t.dataset.bake) {
+    togglePresets(false);
+    const [d, v] = t.dataset.bake.split(/:(.*)/);
+    state.endDay = +d;
+    state.endTime = v;
+    return render();
+  }
   if (t.dataset.shift) {
     shiftStart(+t.dataset.shift);
+    return render();
+  }
+  if (t.dataset.wstep) {
+    const [k, d] = t.dataset.wstep.split(":").map(Number), f = state.flours[k];
+    f.w = Math.min(420, Math.max(180, f.w + d));
+    return render();
+  }
+  if (t.dataset.sstep) {
+    const f = state.flours[1];
+    f.share = Math.min(50, Math.max(5, f.share + +t.dataset.sstep));
+    return render();
+  }
+  if (t.id === "blendBtn" || t.id === "unblendBtn") {
+    if (state.flours.length > 1) state.flours.length = 1;
+    else state.flours.push({ w: 380, share: 25 });
     return render();
   }
   if (t.dataset.step) {
     state.balls = Math.min(36, Math.max(1, state.balls + +t.dataset.step));
     return render();
-  }
-  if (t.dataset.open) {
-    const i = +t.dataset.open;
-    openFlour = openFlour === i ? null : i;
-    return refreshFlours();
-  }
-  if (t.dataset.share) {
-    const [i, v] = t.dataset.share.split(":").map(Number);
-    state.flours[i].share = v;
-    return refreshFlours();
-  }
-  if (t.dataset.remove) {
-    state.flours.splice(+t.dataset.remove, 1);
-    openFlour = null;
-    return refreshFlours();
   }
   if (t.id === "now") {
     const d = nextQuarter(new Date());
@@ -881,51 +1063,40 @@ document.addEventListener("click", e => {
     state.startTime = hhmm(d);
     return render();
   }
-  if (t.id === "addFlour") {
-    state.flours.push({ name: "", w: 300, share: 10 });
-    openFlour = state.flours.length - 1;
-    return refreshFlours();
-  }
-  if (t.hasAttribute("data-collapse")) {
-    state.cfgOpen = false;
-    render();
-    return window.scrollTo(0, 0);
-  }
-  if (t.id === "cfgOpen") {
-    state.cfgOpen = true;
-    return render();
-  }
   if (t.id === "reset" || t.id === "resetNo") {
-    $("cfgFoot").hidden = t.id === "reset";
+    $("reset").hidden = t.id === "reset";
     $("resetAsk").hidden = t.id !== "reset";
     return;
   }
   if (t.id === "resetYes") {
-    state = { ...newState(), cfgOpen: true };
-    openFlour = null;
-    $("cfgFoot").hidden = false;
+    state = { ...newState(), open: state.open };
+    $("reset").hidden = false;
     $("resetAsk").hidden = true;
     renderStyle();
-    return refreshFlours();
+    return render();
   }
   const id = t.parentElement.id;
   if (id && t.dataset.v !== undefined) {
     const v = t.dataset.v;
-    if (id === "hours") { setEnd(+v); return render(); }
+    if (id === "style" && state.style === v) return;
     state[id] = isNaN(+v) ? v : +v;
     if (id === "style") {
-      const st = STYLES[v];
+      /* A new style starts from its own defaults: a fresh 24 h plan starting now. */
+      const st = STYLES[v], d = nextQuarter(new Date());
       state.hyd = st.defHyd;
       state.ball = st.defBall;
+      state.flours = st.defFlours();
+      state.fold = DEFAULTS.fold;
+      state.startDate = isoDay(d);
+      state.startTime = hhmm(d);
+      setEnd(24);
       renderStyle();
     }
     render();
   }
 });
-document.addEventListener("input", e => {
-  const t = e.target;
-  if (t.dataset.w) { state.flours[+t.dataset.w].w = +t.value; render(); }
-  if (t.dataset.name) { state.flours[+t.dataset.name].name = t.value; render(); }
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("presetMenu").hidden) { togglePresets(false); $("presetBtn").focus(); }
 });
 ["startTime", "endTime"].forEach(k => $(k).addEventListener("change", e => {
   if (e.target.value) {
@@ -934,16 +1105,14 @@ document.addEventListener("input", e => {
   }
   render();
 }));
-document.addEventListener("change", e => {
-  const i = e.target.dataset.pick;
-  if (i === undefined) return;
-  const found = FLOUR_LIST.find(o => o && o.name === e.target.value);
-  state.flours[+i].name = found ? found.name : "";
-  if (found) state.flours[+i].w = found.w;
-  refreshFlours();
-});
+const SECTIONS = { secStyle: "style", secFerm: "ferm", secOther: "other", secCheck: "check" };
+Object.entries(SECTIONS).forEach(([id, k]) => { $(id).open = !!state.open[k]; });
+document.addEventListener("toggle", e => {
+  const k = SECTIONS[e.target.id];
+  if (k) { state.open[k] = e.target.open; render(); }
+}, true);
 renderStyle();
-refreshFlours();
+render();
 </script>
 </body>
 </html>
