@@ -10,8 +10,8 @@ Built for hand-mixed Neapolitan dough, a very hot oven and people who have stron
 
 - 🎈 **Two styles:** Canotto (a rim you could float on) or Verace (the classic Naples way, no funny business)
 - ⚖️ **Exact amounts** for any batch, split into bowls your arms can actually handle
-- ⏰ **Auto fermentation:** enter your start and bake times and it builds the plan around them
-- 🌾 **Flour mixer:** blend your flours, set their W values and see the strength of the mix
+- ⏰ **Bake when the guests arrive:** pick lunch, afternoon or dinner tomorrow (or a fixed 24/36/48 h) and it builds the plan around it, with a little day-and-night graph of the whole ferment
+- 🌾 **Flour strength:** set the W of your flour, or blend two and see the result
 - 🌡️ **Yeast that reads the room:** amounts adjust for your schedule, kitchen and fridge temperature
 - 🧐 **Dough check:** warns you when your time, flour and hydration are quietly plotting against you
 - 📋 **One recipe timeline:** every step shows what to grab and how much, and the current step's dot flashes
