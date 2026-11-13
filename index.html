@@ -579,9 +579,6 @@ function checkDough({ hours: h, blend, hyd, strongShare, style, fold, temp, frid
   if (h > 51 && blend < 340) add("caution", "Fermentation time", "Very long ferment for this flour",
     `You've set ${hours} h. Ferments past about 48 h need very strong flour (W 340–400) to hold together, and yours is W ${blend}. The yeast amount also stops adjusting after 48 h, so it may be off.`,
     "Move the bake time earlier so the ferment is 48 h or less, or raise Flour strength to W 340 or more.");
-  if (h > 8.5 && h < 22) add("caution", "Fermentation time", "Untested fermentation length",
-    `${hours} h falls between the tested same-day (8 h) and 24 h schedules. The dough will still work, but the yeast amount and step times are estimated.`,
-    "For the most predictable result, tap Use preset… next to End and pick 8 h or 24 h.");
 
   const gap = minW - blend;
   const longWetWeak = h >= 42 && h <= 51 && hyd >= 68 && blend < 280;

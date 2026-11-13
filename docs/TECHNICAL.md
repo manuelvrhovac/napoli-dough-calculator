@@ -268,7 +268,7 @@ Longer cold ferments use slightly **more** yeast than 24 h: fridge hours count f
 | 10 and up | Cold bulk | 2 h warm, fridge, ball at `h − rise`, where `rise` is 5 h at 24 h, 5.5 h at 36 h and later. |
 
 - The **minimum** is 4 h; under that the timeline, graph and check show a prompt instead.
-- **9–21 h** works but the Dough check marks it as untested.
+- **9–21 h** uses yeast and timings interpolated between the 8 h and 24 h schedules, without a warning.
 - **Over 51 h** works but gets a warning about very strong flour.
 
 ### Start
@@ -324,7 +324,6 @@ Inputs: `blend` is the share-weighted W; `strongShare` is the total share of flo
 | Area | Level | Title | Trigger |
 |---|---|---|---|
 | Fermentation time | caution | Very long ferment for this flour | h > 51 and blend < 340 |
-| Fermentation time | caution | Untested fermentation length | 8.5 < h < 22 |
 | Flour, hydration and time | **risk** | Risk of a slack, unworkable dough | 42 ≤ h ≤ 51, hyd ≥ 68, blend < 280 |
 | Flour strength | caution, **risk** if 30+ below | Flour too weak for a N h ferment | blend < minW (h ≤ 51) |
 | Flour strength | caution | Flour stronger than a N h ferment needs | blend > maxW |
