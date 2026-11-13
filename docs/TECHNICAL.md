@@ -164,7 +164,7 @@ DEFAULTS = {
 | Field | Meaning |
 |---|---|
 | `style` | `"canotto"` or `"verace"` |
-| `balls` | 1–36 (stepper in the Ingredients header) |
+| `balls` | 1–15 (stepper in the Ingredients header); at most 3 bowls |
 | `ball` | grams per ball, from the style's list |
 | `hyd`, `salt` | percentages of flour |
 | `temp` | kitchen °C: 19, 21, 23, 25 or 27 |
@@ -214,7 +214,7 @@ dough factor = 1 + hyd/100 + salt/100 + yeast%/100      (instant % if dry, fresh
 flour        = total dough ÷ dough factor
 ```
 
-- **Bowls:** `bowlCount = ceil(balls / 6)`. Balls are split as evenly as possible into at most two bowl sizes. For example, 7 balls gives one bowl of 4 and one of 3.
+- **Bowls (by flour weight, for hand kneading):** up to 15 balls and 3 bowls. `fit(per)` finds the fewest bowls whose largest bowl stays at or under `per` grams of flour. "Fewer" = `fit(1300)` (never over 1,300 g, so 8 × 270 g still fits one bowl), "more" = `fit(1000)` (comfortable). When they differ, the Ingredients section offers the choice (`state.bowlPref`: `"fewer"` or `"more"`); the default aims for about 1,100 g per bowl. Examples: 7 × 180 g one bowl; 6 × 290 g and 7 × 250 g one bowl by default (choice 1/2); 7 × 270 g two by default; 12 × 270 g two of 6; 12 × 290 g two (choice 2/3); 15 × 290 g three of 5. Each extra bowl is balled 30 min after the previous one.
 - **Flour per bowl** is rounded to the nearest **10 g**: `roundTo(bowlBalls × ball / factor, 10)`. Total flour is the sum of the bowls.
 - **Per bowl, through `weigh()`:**
   - Second flour: `round(flour × share%)`; the first flour is the remainder.

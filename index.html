@@ -18,7 +18,7 @@ body { margin: 0; font-size: 14px; }
   --green: #256b43; --green-end: #35905a; --green-bg: #e3f3e8; --on-green: #ffffff;
   --caution: #8a4b08; --caution-bg: #fdf0d8;
   --warn: #a81f1a; --warn-bg: #fde7e3;
-  --c-flour: #b0730f; --flour-tint: rgba(176, 115, 15, .08); --c-yeast: #6f4fc4; --c-water: #1b78c9; --c-salt: #4f6b82; --c-pizza: #d0401f;
+  --c-flour: #b0730f; --band: #faf8ea; --flour-tint: rgba(176, 115, 15, .08); --day-green: #1d6340; --day-green-bg: #e2f0e7; --day-green-line: #bcdcc8; --c-yeast: #6f4fc4; --c-water: #1b78c9; --c-salt: #4f6b82; --c-pizza: #d0401f;
   --c-bread: #a9651c; --c-fridge: #0d8ca6; --c-temp: #d12f6c; --c-scale: #0f8a6c; --c-bubbles: #2f9bd6;
   --c-flame: #e8590c; --c-clock: #4b57d1;
   --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", system-ui, sans-serif;
@@ -29,8 +29,8 @@ body { margin: 0; font-size: 14px; }
 body { font-variant-numeric: tabular-nums; background: var(--bg); color: var(--fg); font: 400 1rem/1.45 var(--body); }
 .config { display: grid; gap: 10px; min-width: 0; }
 .cfg-body { display: grid; gap: 10px; min-width: 0; }
-.cfg-group { display: grid; gap: 14px; padding: 10px 8px; background: var(--panel); border-radius: 10px; min-width: 0; }
-details.more { display: block; }
+.cfg-group { display: grid; gap: 14px; padding: 10px 8px; background: var(--panel); border-radius: 16px; min-width: 0; }
+details.more { display: block; background: rgba(120, 80, 40, .08); }
 .more > summary::-webkit-details-marker { display: none; }
 .more > summary { position: relative; display: block; list-style: none; padding-right: 22px; cursor: pointer; }
 .more > summary::-webkit-details-marker { display: none; }
@@ -42,7 +42,7 @@ details.more { display: block; }
 .more[open] .more-list { display: none; }
 .more-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .more-body { display: grid; gap: 14px; margin-top: 8px; }
-.mini-warn { margin: 6px 0 0; padding: 6px 8px; border-radius: 6px; background: var(--caution-bg); color: var(--caution); font-size: .85rem; }
+.mini-warn { margin: 6px 0 0; padding: 6px 8px; border-radius: 8px; background: var(--caution-bg); color: var(--caution); font-size: .85rem; }
 .flush { margin: 0; }
 .chev { width: 16px; height: 16px; flex: none; }
 .more-list li { display: block; font-size: .95rem; line-height: 1.3; }
@@ -53,9 +53,9 @@ details.more { display: block; }
 .more-list b { font-weight: 700; }
 .more-list i { font-style: normal; color: var(--muted); }
 .i-alert { color: var(--caution); }
-.collapse { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 44px; padding: 0 12px; background: none; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); font: 600 .95rem var(--body); cursor: pointer; }
+.collapse { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 44px; padding: 0 12px; background: none; border: 1px solid var(--line); border-radius: 11px; color: var(--muted); font: 600 .95rem var(--body); cursor: pointer; }
 .how summary { padding: 8px 0 0; font-size: .92rem; font-weight: 600; color: var(--accent); cursor: pointer; }
-.how-body { margin-top: 6px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; font-size: .92rem; }
+.how-body { margin-top: 6px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 11px; font-size: .92rem; }
 .how-body p { margin: 0 0 6px; }
 .how-body ol { margin: 0 0 8px; padding-left: 20px; }
 .how-body dl { margin: 0; display: grid; gap: 6px; }
@@ -67,6 +67,8 @@ details.more { display: block; }
   padding-right: max(8px, env(safe-area-inset-right, 0px));
   display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr);
 }
+html, body { overflow-x: clip; }
+.top-band { display: grid; gap: 10px; margin: -24px calc(50% - 50vw) 0; padding: 34px calc(50vw - 50%) 16px; background: var(--band); }
 .top { position: relative; padding: 4px 56px; }
 h1 { font: 700 1.3rem/1.15 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; margin: 0; text-align: center; letter-spacing: .01em; color: var(--fg); }
 h1 span { font-style: italic; color: var(--accent); }
@@ -77,7 +79,7 @@ h1 span { font-style: italic; color: var(--accent); }
 h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .group { display: grid; gap: 16px; align-content: start; min-width: 0; }
 .lbl { display: block; font-weight: 700; margin-bottom: 6px; }
-.stepper { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.stepper { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 11px; overflow: hidden; }
 .stepper button { border: 0; background: none; color: var(--accent); font: 600 1.5rem/1 var(--mono); height: 52px; cursor: pointer; touch-action: manipulation; }
 .stepper output { text-align: center; font: 600 1.25rem var(--mono); }
 .inline-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -86,6 +88,9 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .fold-row .seg button { min-height: 36px; }
 .yeast-row .seg button { min-height: 40px; }
 .yeast-row + .how summary { padding-top: 4px; }
+.bowl-choice { gap: 10px; font-size: .82rem; color: var(--muted); line-height: 1.3; }
+.bowl-choice .seg { flex: none; }
+.bowl-choice .seg button { min-height: 32px; padding: 2px 10px; font-size: .82rem; }
 .balls-row .stepper { grid-template-columns: 30px auto 30px; }
 .flour-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
 .fl-head { min-width: 0; padding-top: 8px; }
@@ -99,8 +104,8 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .stepper.mini.main { grid-template-columns: 29px auto 29px; }
 .stepper.mini.main button { height: 41px; font-size: 1.26rem; }
 .stepper.mini.main output { padding: 0 3px; font-size: 1.08rem; }
-.blend { margin-top: -14px; padding: 12px 8px 6px; background: var(--flour-tint); border-radius: 0 0 10px 10px; }
-.flour-wrap.blending { padding: 6px 8px 0; background: var(--flour-tint); border-radius: 10px 10px 0 0; }
+.blend { margin-top: -14px; padding: 12px 8px 6px; background: var(--flour-tint); border-radius: 0 0 16px 16px; }
+.flour-wrap.blending { padding: 6px 8px 0; background: var(--flour-tint); border-radius: 16px 16px 0 0; }
 .pm-day { display: grid; gap: 6px; padding-top: 8px; border-top: 1px solid var(--line); }
 .pm-day:first-child { padding-top: 0; border-top: 0; }
 .pm-fixed { --c: var(--fg); --bg: var(--panel); }
@@ -117,7 +122,7 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .pm-l { flex: none; width: 62px; font-size: .82rem; font-weight: 700; color: var(--c); white-space: nowrap; }
 .pm-l .ico { width: 1.2em; height: 1.2em; margin-right: 3px; color: var(--c); }
 .pm-chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; flex: 1; }
-.pm-chip { display: grid; justify-items: center; padding: 4px 2px; background: var(--bg); border: 1px solid transparent; border-radius: 8px; color: var(--fg); cursor: pointer; touch-action: manipulation; }
+.pm-chip { display: grid; justify-items: center; padding: 4px 2px; background: var(--bg); border: 1px solid transparent; border-radius: 11px; color: var(--fg); cursor: pointer; touch-action: manipulation; }
 .pm-chip b { font: 700 .86rem var(--mono); }
 .pm-chip small { font-size: .76rem; font-weight: 600; color: var(--muted); }
 .pm-chip[aria-pressed="true"] { background: var(--c); }
@@ -131,14 +136,14 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .ftl-mark { position: absolute; top: 0; transform: translateX(-50%); font-weight: 600; color: #3e86b6; white-space: nowrap; }
 .ftl-mark .ico { width: 1.1em; height: 1.1em; margin: 0 1px 0 0; color: inherit; }
 .ftl-tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(255, 255, 255, .85); }
-.ftl-track { position: relative; height: 30px; border-radius: 9px; overflow: hidden; background: var(--line); box-shadow: inset 0 1px 2px rgba(31, 26, 23, .12); }
+.ftl-track { position: relative; height: 30px; border-radius: 12px; overflow: hidden; background: var(--line); box-shadow: inset 0 1px 2px rgba(31, 26, 23, .12); }
 .ftl-seg { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; color: #fff; font: 700 .7rem var(--body); letter-spacing: .03em; text-transform: uppercase; white-space: nowrap; text-shadow: 0 1px 2px rgba(0, 0, 0, .25); }
 .ftl-seg.mix { background: linear-gradient(90deg, #c98a2e, #dca04a); }
 .ftl-seg.warm { background: linear-gradient(90deg, #dca04a, #ecb968); }
 .ftl-seg.cold { background: linear-gradient(90deg, #5aa7cc, #3e86b6 50%, #5aa7cc); }
 .ftl-seg.rise { background: linear-gradient(90deg, #ecb968, #e2703a 40%, #cf4a22); }
 .ftl-night { position: absolute; top: 0; bottom: 0; display: flex; justify-content: flex-start; padding: 2px 0 0 4px; background: linear-gradient(180deg, rgba(20, 28, 70, .38), rgba(20, 28, 70, .22)); color: rgba(255, 255, 255, .9); font-size: .62rem; line-height: 1; pointer-events: none; }
-.ftl-mini { position: relative; display: block; height: 10px; margin: 10px 0 2px; border-radius: 5px; overflow: hidden; background: var(--line); }
+.ftl-mini { position: relative; display: block; height: 10px; margin: 10px 0 2px; border-radius: 7px; overflow: hidden; background: var(--line); }
 .ftl-mini .ftl-seg, .ftl-mini .ftl-night { font-size: 0; padding: 0; text-shadow: none; }
 .more[open] .ftl-mini { display: none; }
 .ftl-mid { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255, 255, 255, .55); }
@@ -150,8 +155,8 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .fl-btn { height: 28px; padding: 0 10px; background: var(--tint); border: 1px solid var(--tint-line); border-radius: 999px; color: var(--accent); font: 700 .78rem var(--body); cursor: pointer; touch-action: manipulation; }
 .balls-row .stepper button { height: 32px; font-size: 1.1rem; }
 .balls-row .stepper output { padding: 0 2px; font-size: .92rem; white-space: nowrap; }
-.seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
-.seg button { border: 0; border-radius: 5px; background: none; color: var(--fg); font: 700 1rem/1.15 var(--body); min-height: 44px; padding: 6px 2px; cursor: pointer; touch-action: manipulation; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 11px; }
+.seg button { border: 0; border-radius: 7px; background: none; color: var(--fg); font: 700 1rem/1.15 var(--body); min-height: 44px; padding: 6px 2px; cursor: pointer; touch-action: manipulation; }
 .seg button small { display: block; font: 400 .72rem/1.15 var(--body); margin-top: 2px; opacity: .85; }
 .seg button[aria-pressed="true"] { background: linear-gradient(120deg, var(--accent), var(--accent-end)); color: var(--on-accent); }
 .seg button:disabled { opacity: .35; cursor: not-allowed; }
@@ -169,22 +174,32 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .style-pic { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: contain; }
 .pic-help { position: absolute; right: 4px; bottom: 4px; width: 34px; height: 34px; padding: 0; border: 2px solid var(--surface); border-radius: 50%; background: var(--tint); color: var(--accent); font: 800 1.05rem/1 var(--body); box-shadow: 0 2px 8px rgba(163, 42, 18, .28); cursor: pointer; touch-action: manipulation; }
 .pic-help[aria-expanded="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-.pic-tip { position: absolute; right: 4px; bottom: 44px; left: 18%; z-index: 2; margin: 0; padding: 8px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(31, 26, 23, .14); font-size: .88rem; line-height: 1.35; color: var(--fg); }
+.pic-tip { position: absolute; right: 4px; bottom: 44px; left: 18%; z-index: 2; margin: 0; padding: 8px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 8px 24px rgba(31, 26, 23, .14); font-size: .88rem; line-height: 1.35; color: var(--fg); }
 .hint { margin: 6px 0 0; font-size: .9rem; color: var(--muted); }
-.preset-menu { position: absolute; z-index: 5; top: 46px; left: 0; right: 0; display: grid; gap: 8px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 22px 50px rgba(31, 26, 23, .32), 0 4px 12px rgba(31, 26, 23, .14), 0 0 0 100vmax rgba(31, 26, 23, .14); }
+.preset-menu { position: absolute; z-index: 5; top: 46px; left: 0; right: 0; display: grid; gap: 8px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 22px 50px rgba(31, 26, 23, .32), 0 4px 12px rgba(31, 26, 23, .14), 0 0 0 100vmax rgba(31, 26, 23, .14); }
 .head-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .head-row output { font: 500 .95rem var(--mono); color: var(--muted); }
-.time { -webkit-appearance: none; appearance: none; display: block; width: 100%; max-width: 100%; min-width: 0; height: 52px; padding: 0 12px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; font: 600 1.25rem var(--mono); }
-.flag { margin: 0; font-size: .95rem; background: var(--warn-bg); color: var(--warn); padding: 8px 10px; border-radius: 6px; }
+.time { -webkit-appearance: none; appearance: none; display: block; width: 100%; max-width: 100%; min-width: 0; height: 52px; padding: 0 12px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 11px; font: 600 1.25rem var(--mono); }
+.flag { margin: 0; font-size: .95rem; background: var(--warn-bg); color: var(--warn); padding: 8px 10px; border-radius: 8px; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
 .link { border: 0; background: none; color: var(--accent); font: 700 1rem var(--body); min-height: 44px; cursor: pointer; padding: 0; }
 .link:disabled { opacity: .4; cursor: not-allowed; }
-.add { background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; }
+.add { background: var(--surface); border: 1px dashed var(--line); border-radius: 11px; }
 
 .now { justify-self: start; border: 0; padding: 0; background: none; color: var(--green); font: 600 .85rem var(--body); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; touch-action: manipulation; }
 .plan { display: grid; gap: 14px; min-width: 0; }
-.plan-day { margin: 0; justify-self: start; padding: 3px 10px; border-radius: 99px; background: var(--tint); border: 1px solid var(--tint-line); color: var(--accent); font: 700 .9rem var(--body); }
+.plan-day { position: sticky; top: 0; z-index: 2; margin: 0; padding: 8px 12px; border-radius: 11px; background: var(--tint); border: 1px solid var(--tint-line); color: var(--accent); font: 800 1rem var(--body); letter-spacing: .01em; box-shadow: 0 2px 6px rgba(31, 26, 23, .06); }
+.green .plan-day { background: var(--day-green-bg); border-color: var(--day-green-line); color: var(--day-green); }
+.green .tl time { color: var(--day-green); }
+.green .tl .dot { background: var(--day-green); }
+.tl-note { margin: 0; font-size: .8rem; color: var(--muted); text-align: right; }
+.tl li.rest time { color: var(--day-green); }
+.tl li.rest .dot { background: var(--day-green); }
+.tl-tip { display: flex; gap: 6px; margin-top: 6px; padding: 8px 10px; border-radius: 11px; background: var(--caution-bg); color: var(--fg); font-size: .9rem; line-height: 1.4; }
+.tl-tip .ico { flex: none; margin-top: 1px; color: var(--caution); }
+.tl-tip b { color: var(--caution); }
+.tl-shift { display: flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--muted); }
 .tl { list-style: none; margin: 0; padding: 0; display: grid; }
 .tl li { display: grid; grid-template-columns: 12px minmax(0, 1fr); gap: 8px; padding-bottom: 14px; position: relative; }
 .tl li:last-child { padding-bottom: 0; }
@@ -196,8 +211,7 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 @media (prefers-reduced-motion: reduce) { .tl .dot.live { animation: none; outline: 3px solid var(--accent-end); outline-offset: 2px; } }
 .tl-top { display: flex; align-items: baseline; gap: 8px; }
 .tl-title { min-width: 0; }
-.tl-head { display: flex; align-items: center; gap: 6px; }
-.end-btn { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; height: 46px; padding: 0 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; color: var(--fg); text-align: left; cursor: pointer; touch-action: manipulation; }
+.end-btn { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; height: 46px; padding: 0 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 11px; color: var(--fg); text-align: left; cursor: pointer; touch-action: manipulation; }
 .end-btn b { font: 600 1.05rem var(--mono); }
 .end-btn .chev { flex: none; width: 16px; height: 16px; color: var(--muted); transition: transform .15s; }
 .end-btn[aria-expanded="true"] { border-color: var(--accent); }
@@ -207,7 +221,7 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .pm-custom .time { height: 42px; }
 .when-top { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
 .shift { display: inline-flex; gap: 2px; }
-.shift button { min-width: 30px; height: 24px; padding: 0 4px; background: none; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font: 500 .78rem var(--body); cursor: pointer; touch-action: manipulation; }
+.shift button { min-width: 30px; height: 24px; padding: 0 4px; background: none; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); font: 500 .78rem var(--body); cursor: pointer; touch-action: manipulation; }
 .ico { width: 1.4em; height: 1.4em; margin-right: 5px; vertical-align: -.32em; color: var(--accent); flex: none; }
 .i-flour, .i-wheat { color: var(--c-flour); } .i-yeast { color: var(--c-yeast); } .i-water { color: var(--c-water); } .i-salt { color: var(--c-salt); }
 .i-pizza { color: var(--c-pizza); } .i-bread { color: var(--c-bread); } .i-fridge { color: var(--c-fridge); } .i-temp { color: var(--c-temp); }
@@ -222,7 +236,7 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .saved { color: var(--muted); font-size: .9rem; margin: 0; }
 .when { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
 .time::-webkit-date-and-time-value { min-width: 0; margin: 0; padding: 0; text-align: left; line-height: 44px; }
-.when-col { display: grid; gap: 6px; align-content: start; min-width: 0; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.when-col { display: grid; gap: 6px; align-content: start; min-width: 0; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 11px; }
 .when-h { margin: 0; font: 600 1.05rem var(--display); }
 .when-sub { margin: 0; font-size: .82rem; line-height: 1.2; color: var(--muted); }
 .when .time { height: 46px; padding: 0 6px; line-height: 44px; font-size: 1.05rem; background: var(--bg); }
@@ -242,7 +256,7 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .more-list .chk.ok { color: var(--green); }
 .checks p { margin: 0; }
 .finding.ok { padding: 6px 10px; background: var(--green-bg); color: var(--green); font-size: .88rem; font-weight: 600; }
-.finding { display: grid; gap: 2px; padding: 8px; border-radius: 6px; background: var(--caution-bg); font-size: .95rem; }
+.finding { display: grid; gap: 2px; padding: 8px; border-radius: 8px; background: var(--caution-bg); font-size: .95rem; }
 .finding[data-level="risk"] { background: var(--warn-bg); }
 .finding b { color: var(--caution); }
 .finding[data-level="risk"] b { color: var(--warn); }
@@ -252,11 +266,12 @@ h2 { font: 600 1.25rem/1.2 var(--display); margin: 0; }
 .sum-pic { position: absolute; top: 0; right: 22px; width: 125px; height: auto; pointer-events: none; }
 .more[open] .sum-pic { display: none; }
 
-.slip { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; }
+.slip { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; min-width: 0; }
 .slip-note { margin: 0; padding: 5px 8px; font-size: .75rem; color: var(--muted); border-top: 1px solid var(--line); }
 .scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 th, td { padding: 8px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th small { display: block; font-weight: 400; font-size: .72rem; color: var(--muted); }
 th:first-child, td:first-child { text-align: left; white-space: normal; padding-right: 8px; overflow-wrap: anywhere; }
 thead th { font: 500 .8rem/1.2 var(--body); color: var(--muted); vertical-align: bottom; background: var(--head); border-bottom: 0; }
 td { font: 500 1rem var(--mono); }
@@ -275,6 +290,7 @@ tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-flour" viewBox="0 0 512 512"><path fill="currentColor" d="M275.8 42.39c-18.5.45-46.9 19.85-69 40.34c-4.6 4.26-8.8 8.41-12.7 12.39c56.2 2.45 109.2-.36 161.8-4.21c-5.1-4.92-11-10.33-17.6-15.86c-20.5-17.21-46.6-33.05-62.5-32.66M436 102.9c-100 7.3-198.7 18.6-313.9 4.3c-5.2 5.1-7.9 9.6-8.7 13.3c-.7 3.6-.2 6.9 2.2 11.1c113.5 25.3 227 25.9 327.2-6.6c.5-2.8.1-5.7-1.1-9.4c-1.2-3.8-3.3-8.1-5.7-12.7m-12.5 46.6c-89.1 23.9-186.5 23.7-284.1 5.4c-23.9 92.3-70 175.4-56.93 272.7l1.16 8.6l-8.57 1.5c-9.83 1.6-23.83 10.3-31.95 19.3c-4.07 4.5-6.59 9-7.18 11.5c-.59 2.4-.94 1.4.33 2.2c5.18 3.5 21 5.4 37.83 2.8s34.81-8.9 45.71-15.8l3-1.9l3.5.7c87.2 16.5 166.5 24.8 254 3.6l4.3-1.1l3.5 2.8c5.6 4.6 23.7 8.4 42.4 9c17 .6 33.8-.5 45.2-1c-1.1-3-3.3-7.6-6.6-12.5c-4.2-6-9.5-12.2-14.5-16.9c-5.1-4.7-10.4-7.4-11.1-7.6l-8.9-1.7l1.8-8.9c18.1-89.2 26.5-179.5-12.9-272.7M271 184.9c59.3 0 106.2 54.7 106.2 120.6S330.3 426.1 271 426.1s-106.2-54.7-106.2-120.6S211.7 184.9 271 184.9m0 18c-48.1 0-88.2 45.2-88.2 102.6c0 52.7 33.8 95.1 76.6 101.7l2-39.1c-30.8-6-39.8-39.4-39.9-51.7c9.3 1 30 8.3 41.3 24.8l1.3-24.4c-30.9-5.9-39.9-39.4-40-51.7c9.2 1 30.1 8.3 41.4 25l1.3-24.3c-17.8-7.4-23.3-29.1-23.4-37.5c8 .8 27.4 8.2 33.9 25.5c8.4-16.4 28.3-21.7 36.2-21.7c-.9 8.8-9 30.6-28.8 35.4l-1.2 23.3c12.9-15.3 34.3-20.4 43.7-20.3c-1.5 12.1-13.8 44.5-45.1 47.2l-1.3 24.6c12.9-15.4 34.4-20.5 43.7-20.5c-1.3 12.1-13.7 44.6-45.1 47.2l-2 38.8c45.2-3.8 81.8-47.5 81.8-102.3c0-57.4-40.1-102.6-88.2-102.6"/></symbol><symbol id="i-yeast" viewBox="0 0 24 24"><path fill="currentColor" d="M18 14a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4l.09-.85c-.04-.7-.17-1.31-.54-1.65c-.2-.2-.48-.31-.8-.37c-.96.55-2.07.87-3.25.87A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.18-.32 2.29-.87 3.25c.06.32.17.6.37.8c.34.37.95.5 1.65.54zM7.5 10A1.5 1.5 0 0 1 9 11.5A1.5 1.5 0 0 1 7.5 13A1.5 1.5 0 0 1 6 11.5A1.5 1.5 0 0 1 7.5 10m2-5C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5"/></symbol><symbol id="i-wheat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12.014 21.514v-3.75M5.93 9.504l-.43 1.604a4.986 4.986 0 0 0 3.524 6.105q1.495.402 2.99.801v-3.44a4.98 4.98 0 0 0-3.676-4.426z"/><path d="M13.744 11.164a4.9 4.9 0 0 0 1.433-3.46a4.88 4.88 0 0 0-1.433-3.46l-1.73-1.73l-1.73 1.73a4.9 4.9 0 0 0-1.433 3.46a4.9 4.9 0 0 0 1.433 3.46"/><path d="m18.099 9.504l.43 1.604a4.986 4.986 0 0 1-3.525 6.105l-2.99.801v-3.44a4.98 4.98 0 0 1 3.677-4.426z"/></g></symbol><symbol id="i-water" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0s3.262-5.708 1.566-8.546l-4.89-7.26c-.42-.625-1.287-.803-1.936-.397a1.4 1.4 0 0 0-.41.397l-4.893 7.26C4.24 13.715 4.9 17.318 7.502 19.423"/></symbol><symbol id="i-salt" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 13v.01M10 16v.01m4-.01v.01M7.5 8h9l-.281-2.248A2 2 0 0 0 14.234 4H9.766A2 2 0 0 0 7.78 5.752z"/><path d="m7.5 8l-1.612 9.671A2 2 0 0 0 7.861 20h8.278a2 2 0 0 0 1.973-2.329L16.5 8"/></g></symbol><symbol id="i-pizza" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 21.5c-3.04 0-5.952-.714-8.5-1.983L12 3l8.5 16.517A19.1 19.1 0 0 1 12 21.5"/><path d="M5.38 15.866a14.94 14.94 0 0 0 6.815 1.634a14.94 14.94 0 0 0 6.502-1.479M13 11.01V11m-2 3v-.01"/></g></symbol><symbol id="i-bread" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 4a3 3 0 0 1 2 5.235V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9.236a3 3 0 0 1 1.824-5.231H18z"/></symbol><symbol id="i-fridge" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2zm0 5h14M9 13v3M9 6v1"/></symbol><symbol id="i-temp" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 13.5a4 4 0 1 0 4 0V5a2 2 0 0 0-4 0zM10 9h4"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20h10M6 6l6-1l6 1m-6-3v17m-3-8L6 6l-3 6a3 3 0 0 0 6 0m12 0l-3-6l-3 6a3 3 0 0 0 6 0"/></symbol><symbol id="i-bubbles" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M7.001 15.085A1.5 1.5 0 0 1 9 16.5"/><circle cx="18.5" cy="8.5" r="3.5"/><circle cx="7.5" cy="16.5" r="5.5"/><circle cx="7.5" cy="4.5" r="2.5"/></g></symbol><symbol id="i-flame" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10.941c2.333-3.308.167-7.823-1-8.941c0 3.395-2.235 5.299-3.667 6.706C5.903 10.114 5 12 5 14.294C5 17.998 8.134 21 12 21s7-3.002 7-6.706c0-1.712-1.232-4.403-2.333-5.588c-2.084 3.353-3.257 3.353-4.667 2.235"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0"/><path d="M12 7v5l3 3"/></g></symbol><defs><linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a32a12"/><stop offset="1" stop-color="#c2401f"/></linearGradient></defs><symbol id="i-sun" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0-8 0m-5 0h1m8-9v1m8 8h1m-9 8v1M5.6 5.6l.7.7m12.1-.7l-.7.7m0 11.4l.7.7m-12.1-.7l-.7.7"/></symbol><symbol id="i-sunset" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 17h1m16 0h1M5.6 10.6l.7.7m12.1-.7l-.7.7M8 17a4 4 0 0 1 8 0M3 21h18M12 3v6l3-3M9 6l3 3"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3h.393a7.5 7.5 0 0 0 7.92 12.446A9 9 0 1 1 12 2.992z"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m-1.637-9.409L2.257 17.125a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87L13.637 3.59a1.914 1.914 0 0 0-3.274 0zM12 16h.01"/></symbol></svg>
 <main class="page">
+  <div class="top-band">
   <header class="top">
     <h1><span>Napoli</span> Pizza Calculator</h1>
     <button type="button" class="reset-link" id="reset">Reset</button>
@@ -467,6 +483,8 @@ tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
     </div>
   </section>
 
+  </div>
+
   <section class="plan" aria-labelledby="ing-h">
     <div class="inline-row balls-row">
       <h2 id="ing-h">Ingredients</h2>
@@ -474,6 +492,13 @@ tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
         <button type="button" data-step="-1" aria-label="One ball fewer">−</button>
         <output id="balls"></output>
         <button type="button" data-step="1" aria-label="One ball more">+</button>
+      </div>
+    </div>
+    <div class="inline-row bowl-choice" id="bowlChoice" hidden>
+      <span id="bowlChoiceTxt"></span>
+      <div class="seg" id="bowlPref" role="group" aria-label="Number of bowls">
+        <button type="button" data-v="fewer" id="bowlFewer"></button>
+        <button type="button" data-v="more" id="bowlMore"></button>
       </div>
     </div>
     <div class="slip" aria-live="polite">
@@ -484,7 +509,7 @@ tr.last-sub td { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
   </section>
 
   <section class="plan" aria-labelledby="tl-h">
-    <h2 id="tl-h">Timeline</h2>
+    <div class="inline-row tl-titlebar"><h2 id="tl-h">Timeline</h2><p class="tl-note" id="tlNote"></p></div>
     <div class="tl-days" id="timeline"></div>
     <p class="saved" id="savedNote" hidden>Your start time and choices are saved in this browser on this device.</p>
   </section>
@@ -514,7 +539,11 @@ function schedule(h) {
 const toMin = t => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
 const autoHours = s => (s.endDay * 1440 + toMin(s.endTime) - toMin(s.startTime)) / 60;
 const TEMP_FACTOR = { 19: 1.2, 21: 1.07, 23: 0.93, 25: 0.8, 27: 0.7 };
-const MAX_PER_BOWL = 6;
+/* Hand kneading: bowls are split by flour weight, at most 3 bowls and 15 balls.
+   A bowl should hold 1,000 g flour or less (comfortable) and never over 1,300 g.
+   When both "fewer" and "more" bowls are reasonable the user may choose;
+   the default aims for about 1,100 g per bowl. */
+const MAX_BALLS = 15, MAX_BOWLS = 3, BOWL_EASY = 1000, BOWL_AIM = 1100, BOWL_MAX = 1300;
 const defaultFlours = () => [
   { w: 300 },
 ];
@@ -544,7 +573,13 @@ function calculate(s) {
   const sch = schedule(s.hours);
   const freshPct = sch.fresh * TEMP_FACTOR[s.temp] * (sch.cold && s.fridge === 3 ? 1.3 : 1);
   const pct = 1 + s.hyd / 100 + s.salt / 100 + freshPct / 100 / (s.yeast === "dry" ? 3 : 1);
-  const bowlCount = Math.ceil(s.balls / MAX_PER_BOWL);
+  const flourRaw = s.balls * s.ball / pct;
+  /* Fewest bowls whose largest bowl stays at or under `per` grams of flour. */
+  const fit = per => { const top = Math.min(MAX_BOWLS, s.balls); let n = 1;
+    while (n < top && Math.ceil(s.balls / n) * s.ball / pct > per) n++; return n; };
+  const bowlFewer = fit(BOWL_MAX), bowlMore = fit(BOWL_EASY), bowlEdge = bowlFewer !== bowlMore;
+  const bowlCount = !bowlEdge ? bowlFewer : s.bowlPref === "fewer" ? bowlFewer : s.bowlPref === "more" ? bowlMore
+    : Math.min(bowlMore, Math.max(bowlFewer, fit(BOWL_AIM)));
   const big = Math.ceil(s.balls / bowlCount), bigCount = s.balls - (big - 1) * bowlCount;
   const sizes = [{ balls: big, count: bigCount }];
   if (bigCount < bowlCount) sizes.push({ balls: big - 1, count: bowlCount - bigCount });
@@ -554,7 +589,7 @@ function calculate(s) {
   ["solution", "held"].forEach(k => total[k] = sum(k));
   total.plain = total.water - total.solution - total.held;
   total.parts = s.flours.map((_, i) => bowls.reduce((t, b) => t + b.parts[i] * b.count, 0));
-  return { bowls, total, bowlCount, freshPct, sch };
+  return { bowls, total, bowlCount, bowlEdge, bowlFewer, bowlMore, flourRaw, freshPct, sch };
 }
 
 /* Dough check (work in progress). Flour windows follow the W-to-time table: [hours, lowest W, highest W]. */
@@ -724,6 +759,10 @@ delete state.cfgOpen;
 if (!state.open || typeof state.open !== "object") state.open = {};
 if (!/^\d{4}-\d{2}-\d{2}$/.test(state.startDate || "")) state.startDate = isoDay(new Date());
 if (![0, 2].includes(state.fold)) state.fold = 2;
+if (state.bowlPref === "one") state.bowlPref = "fewer";
+if (state.bowlPref === "two") state.bowlPref = "more";
+if (!["fewer", "more"].includes(state.bowlPref)) delete state.bowlPref;
+state.balls = Math.min(MAX_BALLS, Math.max(1, Math.round(+state.balls) || DEFAULTS.balls));
 if (!Array.isArray(state.flours) || !state.flours.length) state.flours = defaultFlours();
 if (state.flours.length > MAX_FLOURS) state.flours = state.flours.slice(0, MAX_FLOURS);
 state.flours = state.flours.map((f, i) => {
@@ -759,7 +798,8 @@ const pill = (label, amount, icon) => `<span class="pill">${icon ? ico(icon) : "
 
 function timelineEvents(s, h, r) {
   const c = schedule(h), st = STYLES[s.style], canotto = s.style === "canotto";
-  const ball = c.ballAt, lastOut = h + s.balls * 3 / 60;
+  const ball = c.ballAt;
+  const fmtMin = m => m < 60 ? `${m} min` : `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}`;
   const dry = s.yeast === "dry", solutionOn = dry && s.weigh === "solution";
   const grams = k => r.bowls.map(b => b[k]).join(" / ") + " g";
   const yeastAmt = r.bowls.map(b => fmtY(b.yeast, dry)).join(" / ") + " g";
@@ -802,9 +842,9 @@ function timelineEvents(s, h, r) {
     { t: h, exact: true, title: "Open the first pizza", pills: [pill("Dough ball", "1", "pizza"), pill("Semola", "", "flour")],
       text: canotto ? "Coat the ball in semola. Press from the centre outward to push the gas into the edge, leaving the outer 2.5–3 cm untouched. Flip, repeat, then drape over the backs of your hands and rotate to 28–30 cm. Never press the rim."
         : "Coat the ball in semola. Open by hand from the centre outward, no rolling pin, up to 35 cm, with a thin centre and a 1–2 cm rim." },
-    { t: h, exact: true, title: "Bake", pills: [pill("Pizzas", s.balls, "pizza"), pill("Each", "about 3 min", "clock")],
-      text: "After 25–30 s turn 180°, then bake 25–40 s more. Rest 30 s before cutting. Flame back up and let the stone recover 1–2 min before the next one." },
-    { t: lastOut, exact: true, title: "Last pizza out" },
+    { t: h, exact: true, title: "Bake", pills: [pill("Pizzas", s.balls, "pizza"), pill("Each", "5–10 min", "clock")],
+      text: "After 25–30 s turn 180°, then bake 25–40 s more. Rest 30 s before cutting. Flame back up and let the stone recover 1–2 min before the next one.",
+      tip: s.balls > 6 ? `<b>Big batch: ${s.balls} pizzas take about ${fmtMin(s.balls * 5)}–${fmtMin(s.balls * 10)}.</b> The waiting balls keep rising the whole time. Bake in balling order, bowl A first. Take out only the box you're working from. In a warm kitchen (24 °C and up), keep the boxes you won't need within the hour somewhere cool, or in the fridge, and bring each one out 30–45 min before its turn. Prepare all toppings beforehand, and check the stone every few pizzas.` : "" },
   );
   return ev.sort((a, b) => a.t - b.t);
 }
@@ -816,11 +856,19 @@ function renderTimeline(s, h, r) {
   timelineEvents(s, h, r).forEach(e => {
     const d = hoursIn(s, e.t, e.exact || e.t === 0), label = dayLabel(d);
     let g = groups[groups.length - 1];
-    if (!g || g.label !== label) groups.push(g = { label, items: [] });
-    g.items.push(`<li data-at="${d.getTime()}"><span class="dot"></span><div><div class="tl-top"><time>${hhmm(d)}</time><b class="tl-title">${e.title}</b></div>${e.pills ? `<span class="pills">${e.pills.join("")}</span>` : ""}${e.text ? `<span class="note">${e.text}</span>` : ""}</div></li>`);
+    if (!g || g.label !== label) groups.push(g = { label, day: new Date(d.getFullYear(), d.getMonth(), d.getDate()), items: [] });
+    g.items.push(`<li data-at="${d.getTime()}"><span class="dot"></span><div><div class="tl-top"><time>${hhmm(d)}</time><b class="tl-title">${e.title}</b></div>${e.pills ? `<span class="pills">${e.pills.join("")}</span>` : ""}${e.text ? `<span class="note">${e.text}</span>` : ""}${e.tip ? `<span class="tl-tip">${ico("alert")}<span>${e.tip}</span></span>` : ""}</div></li>`);
   });
-  const each = r.bowlCount === 1 ? "" : `<p class="hint">${r.bowls.length === 1 ? "Amounts are per bowl. Do each step for every bowl." : "Amounts are per bowl size. Do each step for every bowl."}</p>`;
-  return each + groups.map((g, i) => `<div class="tl-day"><div class="tl-head"><p class="plan-day">${g.label}</p>${i === 0 ? SHIFT : ""}</div><ol class="tl">${g.items.join("")}</ol></div>`).join("");
+  /* A whole calendar day with no steps (long cold ferments): show it as a rest day. */
+  for (let i = 1; i < groups.length; i++) {
+    const gap = new Date(groups[i - 1].day); gap.setDate(gap.getDate() + 1);
+    if (gap < groups[i].day) {
+      const noon = new Date(gap); noon.setHours(12);
+      groups.splice(i, 0, { label: dayLabel(gap), day: gap, green: true, items: [`<li class="rest" data-at="${noon.getTime()}"><span class="dot"></span><div><div class="tl-top"><time>All day</time><b class="tl-title">Stays in fridge</b></div><span class="note">Covered at ${s.fridge === 3 ? "2–3" : "4–5"} °C. Nothing to do, keep the lid on.</span></div></li>`] });
+    }
+  }
+  $("tlNote").textContent = r.bowlCount === 1 ? "" : r.bowls.length === 1 ? "Amounts are per bowl" : "Amounts are per bowl size";
+  return groups.map((g, i) => `<div class="tl-day${g.green || g.label.startsWith("Today") ? " green" : ""}"><p class="plan-day">${g.label}</p>${i === 0 ? `<div class="tl-shift"><span>Shift start</span>${SHIFT}</div>` : ""}<ol class="tl">${g.items.join("")}</ol></div>`).join("");
 }
 
 /* Flashes the dot of the step happening right now. */
@@ -955,6 +1003,14 @@ function render() {
   $("hydOut").textContent = `${r.total.water} g water`;
   $("saltOut").textContent = `${r.total.salt} g`;
 
+  $("bowlChoice").hidden = !r.bowlEdge;
+  if (r.bowlEdge) {
+    const n = k => k === 1 ? "one big bowl" : `${k} bigger bowls`;
+    $("bowlChoiceTxt").textContent = `About ${Math.round(r.flourRaw / 10) * 10} g flour: ${n(r.bowlFewer)}, or ${r.bowlMore} smaller ones that are easier to knead?`;
+    $("bowlFewer").textContent = `${r.bowlFewer} ${r.bowlFewer === 1 ? "bowl" : "bowls"}`;
+    $("bowlMore").textContent = `${r.bowlMore} bowls`;
+    $("bowlPref").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === (r.bowlCount === r.bowlMore ? "more" : "fewer")));
+  }
   const dough = r.total.flour + r.total.water + r.total.salt;
   $("slipNote").textContent = `In grams · ${s.balls} × ${s.ball} g ≈ ${dough} g dough`;
   const bake = h > 0 ? `${hoursIn(s, exactH, true).toLocaleDateString("en-GB", { weekday: "short" })} ${s.endTime}` : "";
@@ -970,9 +1026,11 @@ function render() {
   ]);
 
   const dry = s.yeast === "dry", solutionOn = dry && s.weigh === "solution";
-  const cols = r.bowlCount === 1 ? [r.total] : [...r.bowls, r.total];
+  /* One column per bowl (A, B, …), then the total. */
+  const each = r.bowls.flatMap(b => Array(b.count).fill(b));
+  const cols = r.bowlCount === 1 ? [r.total] : [...each, r.total];
   const head = r.bowlCount === 1 ? ["Total"] :
-    [...r.bowls.map(b => `${b.count === 1 ? "1 bowl" : b.count + " bowls"} of ${b.balls}`), "Total"];
+    [...each.map((b, i) => `Bowl ${"ABCDEFG"[i]}<small>${b.balls} balls</small>`), "Total"];
   const pick = (k, f) => cols.map(c => f ? f(c[k]) : c[k]);
   let html = `<thead><tr><th>Ingredient</th>${head.map(t => `<th>${t}</th>`).join("")}</tr></thead><tbody>`;
   s.flours.forEach((f, i) => { html += row(`${ico("flour")}${esc(flourName(f, i, s.flours))} <small>${p[i]}%</small>`, cols.map(c => c.parts[i])); });
@@ -995,6 +1053,7 @@ function render() {
   renderCheck(h, blend, s.hyd, strongShare);
 
   const planOk = h >= 4;
+  $("tlNote").textContent = "";
   $("timeline").innerHTML = planOk ? renderTimeline(s, exactH, r)
     : `<p class="hint">Choose a start and bake time at least 4 h apart to see the timeline.</p>`;
   $("savedNote").hidden = !planOk;
@@ -1051,7 +1110,7 @@ document.addEventListener("click", e => {
     return render();
   }
   if (t.dataset.step) {
-    state.balls = Math.min(36, Math.max(1, state.balls + +t.dataset.step));
+    state.balls = Math.min(MAX_BALLS, Math.max(1, state.balls + +t.dataset.step));
     return render();
   }
   if (t.id === "now") {
